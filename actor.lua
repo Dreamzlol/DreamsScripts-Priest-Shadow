@@ -10,9 +10,9 @@ shadow:Init(function()
     if rotation.settings.mode ~= currentMode then
         currentMode = rotation.settings.mode
         if rotation.settings.mode == "PvE" then
-            awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Shadow PvE active!")
+            awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Shadow PvE active")
         elseif rotation.settings.mode == "PvP" then
-            awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Shadow PvP active!")
+            awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Shadow PvP active")
         end
     end
 
