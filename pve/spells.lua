@@ -203,8 +203,7 @@ mind_blast:Callback("opener", function(spell)
 end)
 
 shadowfiend:Callback("opener", function(spell)
-    if target.enemy and isBoss(target) and target.debuff("Vampiric Touch", player) and
-        player.buffStacks("Shadow Weaving") <= 3 then
+    if target.enemy and isBoss(target) and target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") <= 3 then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
