@@ -47,6 +47,8 @@ function rotation.APL_PvP()
     shadow.FlashHeal()
     shadow.Renew()
 
+    shadow.DispelMagic("defensive")
+
     -- Burst Damage
     if awful.burst then
         shadow.VampiricTouch("sustain")
@@ -63,7 +65,6 @@ function rotation.APL_PvP()
 
     shadow.ShackleUndead("lich")
     shadow.ShackleUndead("gargoyle")
-    shadow.DispelMagic("defensive")
     shadow.DispelMagic("offensive")
     shadow.AbolishDisease()
 

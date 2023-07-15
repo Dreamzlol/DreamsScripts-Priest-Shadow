@@ -30,10 +30,14 @@ end
 
 local function SettingsCheck(settingsVar, castId)
     for k, v in pairs(settingsVar) do
-        if k == castId and v == true then return true end
+        if k == castId and v == true then
+            return true
+        end
         if type(v) == "table" then
             for _, id in ipairs(v) do
-                if castId == id then return true end
+                if castId == id then
+                    return true
+                end
             end
         end
     end
@@ -199,7 +203,8 @@ mind_blast:Callback("opener", function(spell)
 end)
 
 shadowfiend:Callback("opener", function(spell)
-    if target.enemy and isBoss(target) and target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") <= 3 then
+    if target.enemy and isBoss(target) and target.debuff("Vampiric Touch", player) and
+        player.buffStacks("Shadow Weaving") <= 3 then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
