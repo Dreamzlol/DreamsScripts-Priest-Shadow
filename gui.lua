@@ -4,6 +4,7 @@ local class = awful.player.class2
 if class ~= "PRIEST" then
     return
 end
+
 local blue = { 0, 181, 255, 1 }
 local white = { 255, 255, 255, 1 }
 local background = { 0, 13, 49, 1 }
@@ -24,21 +25,23 @@ local gui, settings, cmd = awful.UI:New('ds', {
 
 rotation.settings = settings
 
-local statusFrame = gui:StatusFrame({
-    colors = {
-        background = {0, 0, 0, 0},
-        enabled = {30, 240, 255, 1},
-    },
-    maxWidth = 600,
-    padding = 12,
-})
+if rotation.settings.mode == "PvE" then
+    local statusFrame = gui:StatusFrame({
+        colors = {
+            background = {0, 0, 0, 0},
+            enabled = {30, 240, 255, 1},
+        },
+        maxWidth = 600,
+        padding = 12,
+    })
 
-statusFrame:Button({
-    spellId = 48160,
-    var = "useAoe",
-    text = "Multidot",
-    size = 30
-})
+    statusFrame:Button({
+        spellId = 48160,
+        var = "useAoe",
+        text = "Multidot",
+        size = 30
+    })
+end
 
 -- Welcome
 local Welcome = gui:Tab(awful.textureEscape(15473, 16) .. " Welcome")

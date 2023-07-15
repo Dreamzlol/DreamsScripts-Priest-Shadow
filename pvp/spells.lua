@@ -380,8 +380,8 @@ PowerWordShield:Callback(function(spell)
     local unit = awful.fullGroup.within(40).filter(unitFilter).lowest
     if awful.prep then return end
     if not unit then return end
-    if unit.debuff("Weakened Soul") then return end
-    if unit.buff("Power Word: Shield") then return end
+    if not unit.debuff or unit.debuff("Weakened Soul") then return end
+    if not unit.buff or unit.buff("Power Word: Shield") then return end
 
     if unit.hp < 95 then
         if spell:Cast(unit) then
