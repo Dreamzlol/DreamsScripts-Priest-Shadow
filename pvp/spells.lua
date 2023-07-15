@@ -32,6 +32,9 @@ awful.Populate({
     Silence            = Spell(15487, { effect = "magic", ignoreFacing = true, ignoreCasting = true, ignoreChanneling = true }),
     PsychicHorror      = Spell(64044, { effect = "magic", cc = "stun", ignoreCasting = true, ignoreChanneling = true }),
     Dispersion         = Spell(47585),
+
+    -- Items
+    engineer_gloves     = Spell(6603, { ignoreFacing = true }),
 }, shadow, getfenv(1))
 
 local function unitFilter(obj)
@@ -792,6 +795,30 @@ InnerFire:Callback(function(spell)
 
     if player.hp > 40 then
         if spell:Cast(player) then
+            awful.alert(spell.name, spell.id)
+            return
+        end
+    end
+end)
+
+local function useInventoryItem()
+    RunMacroText("/use 10");
+end
+
+engineer_gloves:Callback("execute", function(spell)
+    local start = GetInventoryItemCooldown("player", 10)
+    if target.enemy and target.hp < 20 and start == 0 then
+        if useInventoryItem() then
+            awful.alert(spell.name, spell.id)
+            return
+        end
+    end
+end)
+
+engineer_gloves:Callback("burst", function(spell)
+    local start = GetInventoryItemCooldown("player", 10)
+    if target.enemy and start == 0 then
+        if useInventoryItem() then
             awful.alert(spell.name, spell.id)
             return
         end
