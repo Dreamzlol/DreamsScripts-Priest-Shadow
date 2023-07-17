@@ -25,23 +25,22 @@ local gui, settings, cmd = awful.UI:New('ds', {
 
 rotation.settings = settings
 
-if rotation.settings.mode == "PvE" then
-    local statusFrame = gui:StatusFrame({
-        colors = {
-            background = {0, 0, 0, 0},
-            enabled = {30, 240, 255, 1},
-        },
-        maxWidth = 600,
-        padding = 12,
-    })
 
-    statusFrame:Button({
-        spellId = 48160,
-        var = "useAoe",
-        text = "Multidot",
-        size = 30
-    })
-end
+local statusFrame = gui:StatusFrame({
+    colors = {
+        background = {0, 0, 0, 0},
+        enabled = {30, 240, 255, 1},
+    },
+    maxWidth = 600,
+    padding = 12,
+})
+
+statusFrame:Button({
+    spellId = 48160,
+    var = "useAoe",
+    text = "Multidot",
+    size = 30
+})
 
 -- Welcome
 local Welcome = gui:Tab(awful.textureEscape(15473, 16) .. " Welcome")
@@ -129,8 +128,7 @@ Spells:Dropdown({
         { label = "> 8 enemies", value = 8, tooltip = "Use Mind Sear if 8 enemies are around target" },
 	},
     header = awful.textureEscape(53023) .. " Mind Sear",
-    placeholder = "None",
-    default = {4}
+    default = 4
 })
 
 local Toggles = gui:Tab(awful.textureEscape(8105, 16) .. " Toggles")

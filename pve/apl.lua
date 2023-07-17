@@ -1,6 +1,20 @@
 local Unlocker, awful, rotation = ...
 local shadow = rotation.priest.shadow
-local player = awful.player
+local player, target = awful.player, awful.target
+
+local function engineering_gloves()
+    local UseInventoryItem = awful.unlock("UseInventoryItem")
+    local start = GetInventoryItemCooldown("player", 10)
+
+    if target and target.exists then
+        if target.level == -1 and start == 0 then
+            if UseInventoryItem(10) then
+                awful.alert("Hyperspeed Accelerators", 54758)
+                return
+            end
+        end
+    end
+end
 
 function rotation.APL_PvE()
     if player.mounted or player.buff("Drink") then
@@ -17,7 +31,7 @@ function rotation.APL_PvE()
     end
 
     -- Items
-    shadow.engineer_gloves()
+    engineering_gloves()
 
     -- AoE Rotation
     shadow.vampiric_touch("aoe")

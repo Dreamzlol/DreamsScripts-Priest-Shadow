@@ -19,14 +19,7 @@ awful.Populate({
     mind_sear           = Spell(53023, { damage = "magic", ignoreFacing = true }),
     shadowfiend         = Spell(34433, { damage = "magic", ignoreFacing = true }),
     shadow_word_death   = Spell(48158, { damage = "magic", ignoreFacing = true }),
-
-    -- Items
-    engineer_gloves     = Spell(6603, { ignoreFacing = true }),
 }, shadow, getfenv(1))
-
-local function isBoss(unit)
-    return unit.level == -1
-end
 
 local function SettingsCheck(settingsVar, castId)
     for k, v in pairs(settingsVar) do
@@ -64,20 +57,6 @@ end)
 vampiric_embrace:Callback(function(spell)
     if not player.buff("Vampiric Embrace") then
         if spell:Cast() then
-            awful.alert(spell.name, spell.id)
-            return
-        end
-    end
-end)
-
-local function useInventoryItem()
-    RunMacroText("/use 10");
-end
-
-engineer_gloves:Callback(function(spell)
-    local start = GetInventoryItemCooldown("player", 10)
-    if target.enemy and isBoss(target) and start == 0 then
-        if useInventoryItem() then
             awful.alert(spell.name, spell.id)
             return
         end
@@ -147,12 +126,14 @@ mind_sear:Callback("aoe", function(spell)
     end
 
     local count, _, objects = awful.enemies.around(target, 10)
-    if target.enemy and count >= rotation.settings.mind_sear then
-        for i, unit in ipairs(objects) do
-            if unit.debuff("Shadow Word: Pain", player) and unit.debuff("Vampiric Touch", player) then
-                if spell:Cast(target) then
-                    awful.alert(spell.name, spell.id)
-                    return
+    if target and target.exists then
+        if count >= rotation.settings.mind_sear then
+            for i, unit in ipairs(objects) do
+                if unit.debuff("Vampiric Touch", player) then
+                    if spell:Cast(target) then
+                        awful.alert(spell.name, spell.id)
+                        return
+                    end
                 end
             end
         end
@@ -168,10 +149,12 @@ vampiric_touch:Callback("opener", function(spell)
         return
     end
 
-    if target.enemy and target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") < 2 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
+    if target and target.exists then
+        if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") < 2 then
+            if spell:Cast(target) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
         end
     end
 end)
@@ -181,10 +164,12 @@ devouring_plague:Callback("opener", function(spell)
         return
     end
 
-    if target.enemy and not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") <= 2 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
+    if target and target.exists then
+        if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") <= 2 then
+            if spell:Cast(target) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
         end
     end
 end)
@@ -194,19 +179,23 @@ mind_blast:Callback("opener", function(spell)
         return
     end
 
-    if target.enemy and target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") <= 3 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
+    if target and target.exists then
+        if target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") <= 3 then
+            if spell:Cast(target) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
         end
     end
 end)
 
 shadowfiend:Callback("opener", function(spell)
-    if target.enemy and isBoss(target) and target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") <= 3 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
+    if target and target.exists then
+        if d and target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") <= 3 then
+            if spell:Cast(target) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
         end
     end
 end)
@@ -216,19 +205,23 @@ mind_flay:Callback("opener", function(spell)
         return
     end
 
-    if target.enemy and target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") < 5 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
+    if target and target.exists then
+        if target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") < 5 then
+            if spell:Cast(target) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
         end
     end
 end)
 
 shadow_word_pain:Callback("opener", function(spell)
-    if target.enemy and not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
+    if target and target.exists then
+        if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 then
+            if spell:Cast(target) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
         end
     end
 end)
@@ -242,28 +235,34 @@ vampiric_touch:Callback(function(spell)
         return
     end
 
-    if target.enemy and target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") == 5 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
+    if target and target.exists then
+        if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") == 5 then
+            if spell:Cast(target) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
         end
     end
 end)
 
 devouring_plague:Callback(function(spell)
-    if target.enemy and not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") == 5 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
+    if target and target.exists then
+        if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") == 5 then
+            if spell:Cast(target) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
         end
     end
 end)
 
 shadowfiend:Callback(function(spell)
-    if target.enemy and isBoss(target) and player.buffStacks("Shadow Weaving") == 5 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
+    if target and target.exists then
+        if target.level == -1 and player.buffStacks("Shadow Weaving") == 5 then
+            if spell:Cast(target) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
         end
     end
 end)
@@ -273,10 +272,12 @@ mind_blast:Callback(function(spell)
         return
     end
 
-    if target.enemy and player.buffStacks("Shadow Weaving") == 5 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
+    if target and target.exists then
+        if player.buffStacks("Shadow Weaving") == 5 then
+            if spell:Cast(target) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
         end
     end
 end)
@@ -286,28 +287,34 @@ mind_flay:Callback(function(spell)
         return
     end
 
-    if target.enemy and player.buffStacks("Shadow Weaving") == 5 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
+    if target and target.exists then
+        if player.buffStacks("Shadow Weaving") == 5 then
+            if spell:Cast(target) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
         end
     end
 end)
 
 shadow_word_pain:Callback(function(spell)
-    if target.enemy and not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
+    if target and target.exists then
+        if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 then
+            if spell:Cast(target) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
         end
     end
 end)
 
 shadow_word_death:Callback(function(spell)
-    if target.enemy and player.moving then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
+    if target and target.exists then
+        if player.moving then
+            if spell:Cast(target) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
         end
     end
 end)
