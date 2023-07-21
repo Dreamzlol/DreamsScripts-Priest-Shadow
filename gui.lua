@@ -38,7 +38,7 @@ local statusFrame = gui:StatusFrame({
 statusFrame:Button({
     spellId = 48160,
     var = "useAoe",
-    text = "Multidot",
+    text = "AoE",
     size = 30
 })
 
@@ -139,9 +139,16 @@ Toggles:Text({
 })
 
 Toggles:Checkbox({
-    text = "Use Multidot",
+    text = "Use AoE (Multidot)",
     var = "useAoe",
-    tooltip = "Multidot enemies near you.",
+    tooltip = "AoE / Multidot enemies near you.",
+    default = true
+})
+
+Toggles:Checkbox({
+    text = "Use Saronite Bomb",
+    var = "useSaroniteBomb",
+    tooltip = "Use Saronite Bomb",
     default = true
 })
 

@@ -91,7 +91,6 @@ local preemptive = {
 awful.onEvent(function(info, event, source, dest)
     if event == "SPELL_CAST_SUCCESS" then
         if not source.enemy then return end
-        if not dest.isUnit(player) then return end
 
         local _, spellName = select(12, unpack(info))
         if preemptive[spellName] then
@@ -107,14 +106,12 @@ local swdCast = {
     ["Polymorph"] = true,
     -- Warlock
     ["Seduction"] = true,
-    ["Fear"] = true
+    ["Fear"] = true,
 }
 
 -- Shadow Word: Death
 ShadowWordDeath:Callback("polymorph", function(spell)
-    awful.enemies.within(40).filter(unitFilter).loop(function(unit)
-        if not unit.castTarget.isUnit(player) then return end
-
+    awful.enemies.loop(function(unit)
         if swdCast[unit.casting] and unit.castRemains < awful.buffer + awful.latency + 0.03 then
             SpellStopCasting()
             if spell:Cast(unit) then
@@ -126,9 +123,7 @@ ShadowWordDeath:Callback("polymorph", function(spell)
 end)
 
 ShadowWordDeath:Callback("seduction", function(spell)
-    awful.enemyPets.within(40).filter(unitFilter).loop(function(unit)
-        if not unit.castTarget.isUnit(player) then return end
-
+    awful.enemyPets.loop(function(unit)
         if swdCast[unit.casting] and unit.castRemains < awful.buffer + awful.latency + 0.03 then
             SpellStopCasting()
             if spell:Cast(unit) then
@@ -292,7 +287,7 @@ PsychicHorror:Callback(function(spell)
     awful.enemies.within(40).filter(unitFilter).loop(function(enemy)
         if enemy.buff("Bladestorm") or enemy.buff("Shadow Dance") then
             SpellStopCasting()
-            if spell:Cast(target) then
+            if spell:Cast(enemy) then
                 awful.alert(spell.name, spell.id)
                 return
             end
@@ -355,6 +350,10 @@ VampiricTouch:Callback("sustain", function(spell)
 end)
 
 MindFlay:Callback("sustain", function(spell)
+    if not target.debuff("Vampiric Touch", player) then
+        return
+    end
+
     if target.bcc then return end
 
     if target.enemy then
@@ -398,7 +397,7 @@ PrayerOfMending:Callback(function(spell)
     if not awful.arena then return end
     if unit.buff("Prayer of Mending") then return end
 
-    if unit.hp < 60 then
+    if unit.hp < 40 then
         if spell:Cast(unit) then
             awful.alert(spell.name, spell.id)
             return
@@ -413,7 +412,7 @@ BindingHeal:Callback(function(spell)
     if not awful.arena then return end
     if player.moving then return end
 
-    if unit.hp < 60 and player.hp < 60 then
+    if unit.hp < 40 and player.hp < 40 then
         if spell:Cast(unit) then
             awful.alert(spell.name, spell.id)
             return
@@ -428,7 +427,7 @@ FlashHeal:Callback(function(spell)
     if not awful.arena then return end
     if player.moving then return end
 
-    if unit.hp < 60 then
+    if unit.hp < 40 then
         if spell:Cast(unit) then
             awful.alert(spell.name, spell.id)
             return
@@ -443,7 +442,7 @@ Renew:Callback(function(spell)
     if not awful.arena then return end
     if unit.buff("Renew") then return end
 
-    if unit.hp > 20 and unit.hp < 60 then
+    if unit.hp > 20 and unit.hp < 40 then
         if spell:Cast(unit) then
             awful.alert(spell.name, spell.id)
             return
@@ -474,6 +473,13 @@ end)
 
 -- Mind Blast
 MindBlast:Callback("sustain", function(spell)
+    if not target.debuff("Vampiric Touch", player) then
+        return
+    end
+    if target.bcc then
+        return
+    end
+
     if target.enemy then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)

@@ -26,5 +26,5 @@ shadow:Init(function()
     elseif rotation.settings.mode == "PvP" then
         rotation.APL_PvP()
     end
-end, 0.05)
+end)
 

@@ -48,6 +48,7 @@ function rotation.APL_PvP()
     shadow.FlashHeal()
     shadow.Renew()
 
+    shadow.VampiricTouch("sustain")
     shadow.DispelMagic("defensive")
 
     -- Burst Damage
@@ -61,7 +62,6 @@ function rotation.APL_PvP()
         shadow.DevouringPlague("sustain")
     end
 
-    shadow.VampiricTouch("sustain")
     shadow.ShadowWordPain("sustain")
     shadow.DevouringPlague("sustain")
 
