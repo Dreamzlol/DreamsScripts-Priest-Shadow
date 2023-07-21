@@ -112,6 +112,9 @@ shadow_word_pain:Callback("aoe", function(spell)
 end)
 
 mind_sear:Callback("aoe", function(spell)
+    if not rotation.settings.useAoe then
+        return
+    end
     if player.moving then
         return
     end
