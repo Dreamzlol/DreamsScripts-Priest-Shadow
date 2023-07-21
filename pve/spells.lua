@@ -21,6 +21,10 @@ awful.Populate({
     shadow_word_death   = Spell(48158, { damage = "magic", ignoreFacing = true }),
 }, shadow, getfenv(1))
 
+local function filter(obj)
+    return not obj.combat
+end
+
 local function SettingsCheck(settingsVar, castId)
     for k, v in pairs(settingsVar) do
         if k == castId and v == true then
@@ -78,19 +82,14 @@ vampiric_touch:Callback("aoe", function(spell)
         return
     end
 
-    local count, _, objects = awful.enemies.around(player, 36, function(obj)
-        return obj.combat
-    end)
-    if count >= 2 then
-        for i, enemy in ipairs(objects) do
-            if enemy.debuffRemains("Vampiric Touch", player) < 1 and enemy.ttd > 20 then
-                if spell:Cast(enemy) then
-                    awful.alert(spell.name, spell.id)
-                    return
-                end
+    awful.enemies.within(40).filter(filter).loop(function(enemy)
+        if enemy.debuffRemains("Vampiric Touch", player) < 1 then
+            if spell:Cast(enemy) then
+                awful.alert(spell.name, spell.id)
+                return
             end
         end
-    end
+    end)
 end)
 
 shadow_word_pain:Callback("aoe", function(spell)
@@ -102,19 +101,14 @@ shadow_word_pain:Callback("aoe", function(spell)
         return
     end
 
-    local count, _, objects = awful.enemies.around(player, 36, function(obj)
-        return obj.combat
-    end)
-    if count >= 2 then
-        for i, enemy in ipairs(objects) do
-            if not enemy.debuff("Shadow Word: Pain", player) and enemy.ttd > 20 then
-                if spell:Cast(enemy) then
-                    awful.alert(spell.name, spell.id)
-                    return
-                end
+    awful.enemies.within(40).filter(filter).loop(function(enemy)
+        if not enemy.debuff("Shadow Word: Pain", player) then
+            if spell:Cast(enemy) then
+                awful.alert(spell.name, spell.id)
+                return
             end
         end
-    end
+    end)
 end)
 
 mind_sear:Callback("aoe", function(spell)
@@ -125,16 +119,12 @@ mind_sear:Callback("aoe", function(spell)
         return
     end
 
-    local count, _, objects = awful.enemies.around(target, 10)
+    local hasVT, count = awful.enemies.around(target, 10, function(obj) return obj.debuff("Vampiric Touch", player) end)
     if target and target.exists then
-        if count >= rotation.settings.mind_sear then
-            for i, unit in ipairs(objects) do
-                if unit.debuff("Vampiric Touch", player) then
-                    if spell:Cast(target) then
-                        awful.alert(spell.name, spell.id)
-                        return
-                    end
-                end
+        if count >= rotation.settings.mind_sear and hasVT then
+            if spell:Cast(target) then
+                awful.alert(spell.name, spell.id)
+                return
             end
         end
     end
