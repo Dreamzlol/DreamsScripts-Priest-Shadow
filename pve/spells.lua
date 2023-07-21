@@ -22,7 +22,7 @@ awful.Populate({
 }, shadow, getfenv(1))
 
 local function filter(obj)
-    return not obj.combat
+    return obj.combat
 end
 
 local function SettingsCheck(settingsVar, castId)
