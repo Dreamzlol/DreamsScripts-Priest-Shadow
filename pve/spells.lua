@@ -22,7 +22,7 @@ awful.Populate({
 }, shadow, getfenv(1))
 
 local function filter(obj)
-    return obj.combat
+    return obj.combat and obj.los and obj.distance < 40 and obj.enemy and not obj.dead
 end
 
 local function SettingsCheck(settingsVar, castId)
@@ -122,7 +122,7 @@ mind_sear:Callback("aoe", function(spell)
         return
     end
 
-    local hasVT, count = awful.enemies.around(target, 10, function(obj) return obj.debuff("Vampiric Touch", player) end)
+    local hasVT, count = awful.enemies.around(target, 10, function(obj) return obj.combat and obj.enemy and not obj.dead and obj.debuff("Vampiric Touch", player) end)
     if target and target.exists then
         if count >= rotation.settings.mind_sear and hasVT then
             if spell:Cast(target) then

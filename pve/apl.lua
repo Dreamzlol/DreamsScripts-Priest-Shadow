@@ -41,7 +41,7 @@ function rotation.APL_PvE()
     shadow.inner_fire()
     shadow.vampiric_embrace()
 
-    if not player.combat then
+    if not target.combat or not player.combat then
         return
     end
 
@@ -56,6 +56,7 @@ function rotation.APL_PvE()
     -- Opener Rotation
     shadow.vampiric_touch("opener")
     shadow.devouring_plague("opener")
+    saronite_bomb()
     shadow.mind_blast("opener")
     shadow.shadowfiend("opener")
     shadow.mind_flay("opener")
@@ -65,7 +66,6 @@ function rotation.APL_PvE()
     shadow.shadow_word_death()
     shadow.vampiric_touch()
     shadow.devouring_plague()
-    saronite_bomb()
     shadow.shadowfiend()
     shadow.mind_blast()
     shadow.mind_flay()
