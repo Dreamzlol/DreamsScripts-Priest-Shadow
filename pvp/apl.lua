@@ -50,6 +50,7 @@ function rotation.APL_PvP()
 
     shadow.VampiricTouch("sustain")
     shadow.DispelMagic("defensive")
+    shadow.DispelMagic("offensive")
 
     -- Burst Damage
     if awful.burst then
@@ -67,7 +68,6 @@ function rotation.APL_PvP()
 
     shadow.ShackleUndead("lich")
     shadow.ShackleUndead("gargoyle")
-    shadow.DispelMagic("offensive")
     shadow.AbolishDisease()
 
     shadow.HolyNova("snakes")

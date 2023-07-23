@@ -302,6 +302,10 @@ shadow_word_pain:Callback(function(spell)
 end)
 
 shadow_word_death:Callback(function(spell)
+    if player.debuff("Profound Darkness") then
+        return
+    end
+
     if target and target.exists then
         if player.moving then
             if spell:Cast(target) then

@@ -544,7 +544,7 @@ local fearImmunity = {6346, 49039, 48707, 642, 31224}
 -- Psychic Scream
 PsychicScream:Callback("mutiple", function(spell)
     if awful.enemies.around(player, 6.5, function(enemy)
-        return enemy.los and enemy.ccRemains < 1.0 and not enemy.isPet and not enemy.buffFrom(fearImmunity) and
+        return enemy.los and enemy.ccRemains < 0.1 and not enemy.isPet and not enemy.buffFrom(fearImmunity) and
                    not tremor
     end) >= 2 then
         if spell:Cast() then
@@ -558,8 +558,9 @@ PsychicScream:Callback("focus", function(spell)
     if not focus.exists then return end
     if focus.buffFrom(fearImmunity) then return end
     if not focus.los then return end
+    if focus.debuff("Cyclone") then return end
 
-    if focus.distanceLiteral < 9 and focus.ccRemains < 1.0 and not tremor then
+    if focus.distanceLiteral < 9 and focus.ccRemains < 0.1 and not tremor then
         if spell:Cast() then
             awful.alert(spell.name .. " (Focus)", spell.id)
             return
@@ -730,7 +731,7 @@ DispelMagic:Callback("offensive", function(spell)
         if not target.enemy then return end
 
         local name = unpack(buff)
-        if dispelOffensive[name] and player.manaPct > 40 and awful.fullGroup.lowest.hp > 40 then
+        if dispelOffensive[name] and player.manaPct > 20 and awful.fullGroup.lowest.hp > 40 then
             if spell:Cast(target) then
                 awful.alert(spell.name .. " (Offensive)", spell.id)
                 return
