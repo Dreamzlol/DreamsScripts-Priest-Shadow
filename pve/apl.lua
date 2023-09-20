@@ -41,7 +41,7 @@ function rotation.APL_PvE()
     shadow.inner_fire()
     shadow.vampiric_embrace()
 
-    if not target.combat or not player.combat then
+    if not player.combat then
         return
     end
 
