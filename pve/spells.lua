@@ -83,7 +83,7 @@ vampiric_touch:Callback("aoe", function(spell)
     end
 
     awful.enemies.within(40).filter(filter).loop(function(enemy)
-        if enemy.debuffRemains("Vampiric Touch", player) < 1 then
+        if enemy.debuffRemains("Vampiric Touch", player) < 1 and target.ttd >= 14 then
             if spell:Cast(enemy) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -102,7 +102,7 @@ shadow_word_pain:Callback("aoe", function(spell)
     end
 
     awful.enemies.within(40).filter(filter).loop(function(enemy)
-        if not enemy.debuff("Shadow Word: Pain", player) then
+        if not enemy.debuff("Shadow Word: Pain", player) and target.ttd >= 14 then
             if spell:Cast(enemy) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -143,7 +143,7 @@ vampiric_touch:Callback("opener", function(spell)
     end
 
     if target and target.exists then
-        if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") < 2 then
+        if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") < 2 and target.ttd >= 14 then
             if spell:Cast(target) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -158,7 +158,7 @@ devouring_plague:Callback("opener", function(spell)
     end
 
     if target and target.exists then
-        if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") <= 2 then
+        if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") <= 2 and target.ttd >= 14 then
             if spell:Cast(target) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -210,7 +210,7 @@ end)
 
 shadow_word_pain:Callback("opener", function(spell)
     if target and target.exists then
-        if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 then
+        if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
             if spell:Cast(target) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -229,7 +229,7 @@ vampiric_touch:Callback(function(spell)
     end
 
     if target and target.exists then
-        if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") == 5 then
+        if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
             if spell:Cast(target) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -240,7 +240,7 @@ end)
 
 devouring_plague:Callback(function(spell)
     if target and target.exists then
-        if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") == 5 then
+        if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
             if spell:Cast(target) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -292,7 +292,7 @@ end)
 
 shadow_word_pain:Callback(function(spell)
     if target and target.exists then
-        if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 then
+        if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
             if spell:Cast(target) then
                 awful.alert(spell.name, spell.id)
                 return
