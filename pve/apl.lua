@@ -1,6 +1,7 @@
 local Unlocker, awful, rotation = ...
 local shadow = rotation.priest.shadow
 local player, target = awful.player, awful.target
+awful.ttd_enabled = true
 
 local function engineering_gloves()
     local UseInventoryItem = awful.unlock("UseInventoryItem")
