@@ -4,6 +4,10 @@ local player, target = awful.player, awful.target
 awful.ttd_enabled = true
 
 local function engineering_gloves()
+    if player.channel == "Mind Flay" then
+        return
+    end
+
     local UseInventoryItem = awful.unlock("UseInventoryItem")
     local start = GetInventoryItemCooldown("player", 10)
 
