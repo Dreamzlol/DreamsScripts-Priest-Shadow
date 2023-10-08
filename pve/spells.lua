@@ -182,6 +182,9 @@ devouring_plague:Callback("opener", function(spell)
 end)
 
 mind_blast:Callback("opener", function(spell)
+    if not rotation.settings.use_mind_blast then
+        return
+    end
     if player.moving then
         return
     end

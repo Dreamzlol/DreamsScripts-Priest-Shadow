@@ -158,6 +158,13 @@ Toggles:Checkbox({
     default = true
 })
 
+Toggles:Checkbox({
+    text = "Use Mind Blast",
+    var = "use_mind_blast",
+    tooltip = "Use Mind Blast",
+    default = true
+})
+
 local Macros = gui:Tab(awful.textureEscape(47585, 16) .. " Macros")
 Macros:Text({
     text = "|cff00B5FFMacros",
