@@ -64,7 +64,7 @@ inner_focus:Callback(function(spell)
         return
     end
 
-    if target.level == -1 and not player.buff("Inner Focus") then
+    if target.level == -1 and player.buffStacks("Shadow Weaving") == 5 then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
             return
