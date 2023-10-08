@@ -64,7 +64,6 @@ function rotation.APL_PvE()
     saronite_bomb()
     shadow.mind_blast("opener")
     shadow.shadowfiend("opener")
-    shadow.inner_focus()
     shadow.mind_flay("opener")
     shadow.shadow_word_pain("opener")
 
