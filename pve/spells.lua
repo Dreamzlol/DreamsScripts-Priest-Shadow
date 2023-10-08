@@ -5,20 +5,21 @@ local player, target = awful.player, awful.target
 
 awful.Populate({
     -- Buffs
-    shadowform          = Spell(15473, { beneficial = true }),
-    inner_fire          = Spell(48168, { beneficial = true }),
-    vampiric_embrace    = Spell(15286, { beneficial = true }),
-    dispersion          = Spell(47585),
+    shadowform        = Spell(15473, { beneficial = true }),
+    inner_fire        = Spell(48168, { beneficial = true }),
+    vampiric_embrace  = Spell(15286, { beneficial = true }),
+    dispersion        = Spell(47585),
+    inner_focus       = Spell(14751, { beneficial = true }),
 
     -- Damage
-    mind_blast          = Spell(48127, { damage = "magic" }),
-    mind_flay           = Spell(48156, { damage = "magic" }),
-    vampiric_touch      = Spell(48160, { damage = "magic", ignoreFacing = true }),
-    devouring_plague    = Spell(48300, { damage = "magic", ignoreFacing = true }),
-    shadow_word_pain    = Spell(2767, { damage = "magic", ignoreFacing = true }),
-    mind_sear           = Spell(53023, { damage = "magic", ignoreFacing = true }),
-    shadowfiend         = Spell(34433, { damage = "magic", ignoreFacing = true }),
-    shadow_word_death   = Spell(48158, { damage = "magic", ignoreFacing = true }),
+    mind_blast        = Spell(48127, { damage = "magic" }),
+    mind_flay         = Spell(48156, { damage = "magic" }),
+    vampiric_touch    = Spell(48160, { damage = "magic", ignoreFacing = true }),
+    devouring_plague  = Spell(48300, { damage = "magic", ignoreFacing = true }),
+    shadow_word_pain  = Spell(2767, { damage = "magic", ignoreFacing = true }),
+    mind_sear         = Spell(53023, { damage = "magic", ignoreFacing = true }),
+    shadowfiend       = Spell(34433, { damage = "magic", ignoreFacing = true }),
+    shadow_word_death = Spell(48158, { damage = "magic", ignoreFacing = true }),
 }, shadow, getfenv(1))
 
 local function filter(obj)
@@ -51,6 +52,19 @@ end)
 
 inner_fire:Callback(function(spell)
     if not player.buff("Inner Fire") then
+        if spell:Cast() then
+            awful.alert(spell.name, spell.id)
+            return
+        end
+    end
+end)
+
+inner_focus:Callback(function(spell)
+    if not rotation.settings.use_cds then
+        return
+    end
+
+    if target.level == -1 and not player.buff("Inner Focus") then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
             return
@@ -183,8 +197,12 @@ mind_blast:Callback("opener", function(spell)
 end)
 
 shadowfiend:Callback("opener", function(spell)
+    if not rotation.settings.use_cds then
+        return
+    end
+
     if target and target.exists then
-        if d and target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") <= 3 then
+        if target.level == -1 and target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") <= 3 then
             if spell:Cast(target) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -250,6 +268,10 @@ devouring_plague:Callback(function(spell)
 end)
 
 shadowfiend:Callback(function(spell)
+    if not rotation.settings.use_cds then
+        return
+    end
+
     if target and target.exists then
         if target.level == -1 and player.buffStacks("Shadow Weaving") == 5 then
             if spell:Cast(target) then

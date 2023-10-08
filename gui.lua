@@ -25,11 +25,10 @@ local gui, settings, cmd = awful.UI:New('ds', {
 
 rotation.settings = settings
 
-
 local statusFrame = gui:StatusFrame({
     colors = {
-        background = {0, 0, 0, 0},
-        enabled = {30, 240, 255, 1},
+        background = { 0, 0, 0, 0 },
+        enabled = { 30, 240, 255, 1 },
     },
     maxWidth = 600,
     padding = 12,
@@ -39,6 +38,13 @@ statusFrame:Button({
     spellId = 48160,
     var = "useAoe",
     text = "AoE",
+    size = 30
+})
+
+statusFrame:Button({
+    spellId = 34433,
+    var = "use_cds",
+    text = "Use CDs",
     size = 30
 })
 
@@ -83,12 +89,12 @@ Mode:Text({
 })
 
 Mode:Dropdown({
-	var = "mode",
-	tooltip = "Select the Rotation Mode.",
-	options = {
-		{ label = awful.textureEscape(15336, 16) .. " PvE", value = "PvE", tooltip = "Use PvE Rotation" },
-		{ label = awful.textureEscape(15487, 16) .. " PvP", value = "PvP", tooltip = "Use PvP Rotation" },
-	},
+    var = "mode",
+    tooltip = "Select the Rotation Mode.",
+    options = {
+        { label = awful.textureEscape(15336, 16) .. " PvE", value = "PvE", tooltip = "Use PvE Rotation" },
+        { label = awful.textureEscape(15487, 16) .. " PvP", value = "PvP", tooltip = "Use PvP Rotation" },
+    },
     placeholder = "None",
     header = "Select Rotation Mode",
 })
@@ -101,24 +107,24 @@ Spells:Text({
 })
 
 Spells:Dropdown({
-	var = "aoeRotation",
-	multi = true,
-	tooltip = "Choose the Spells for AoE Rotation being used",
-	options = {
-    { label = awful.textureEscape(48160, 16) .. " Vampiric Touch", value = "Vampiric Touch" },
-    { label = awful.textureEscape(2767, 16) .. " Shadow Word Pain", value = "Shadow Word: Pain" },
-    { label = awful.textureEscape(53023, 16) .. " Mind Sear", value = "Mind Sear" },
-	},
-	placeholder = "Choose spells",
-	header = "Spells for AoE Rotation",
-    default = {"Vampiric Touch", "Shadow Word: Pain", "Mind Sear"}
+    var = "aoeRotation",
+    multi = true,
+    tooltip = "Choose the Spells for AoE Rotation being used",
+    options = {
+        { label = awful.textureEscape(48160, 16) .. " Vampiric Touch",  value = "Vampiric Touch" },
+        { label = awful.textureEscape(2767, 16) .. " Shadow Word Pain", value = "Shadow Word: Pain" },
+        { label = awful.textureEscape(53023, 16) .. " Mind Sear",       value = "Mind Sear" },
+    },
+    placeholder = "Choose spells",
+    header = "Spells for AoE Rotation",
+    default = { "Vampiric Touch", "Shadow Word: Pain", "Mind Sear" }
 })
 
 Spells:Dropdown({
-	var = "mind_sear",
-	tooltip = "Use Mind Sear if more than selected enemies are around target. Default: 4",
-	options = {
-		{ label = "> 1 enemies", value = 1, tooltip = "Use Mind Sear if 1 enemies are around target" },
+    var = "mind_sear",
+    tooltip = "Use Mind Sear if more than selected enemies are around target. Default: 4",
+    options = {
+        { label = "> 1 enemies", value = 1, tooltip = "Use Mind Sear if 1 enemies are around target" },
         { label = "> 2 enemies", value = 2, tooltip = "Use Mind Sear if 2 enemies are around target" },
         { label = "> 3 enemies", value = 3, tooltip = "Use Mind Sear if 3 enemies are around target" },
         { label = "> 4 enemies", value = 4, tooltip = "Use Mind Sear if 4 enemies are around target" },
@@ -126,7 +132,7 @@ Spells:Dropdown({
         { label = "> 6 enemies", value = 6, tooltip = "Use Mind Sear if 6 enemies are around target" },
         { label = "> 7 enemies", value = 7, tooltip = "Use Mind Sear if 7 enemies are around target" },
         { label = "> 8 enemies", value = 8, tooltip = "Use Mind Sear if 8 enemies are around target" },
-	},
+    },
     header = awful.textureEscape(53023) .. " Mind Sear",
     default = 4
 })
