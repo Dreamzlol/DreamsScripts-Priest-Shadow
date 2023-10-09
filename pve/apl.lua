@@ -36,6 +36,24 @@ local function saronite_bomb()
     end
 end
 
+local function trinket()
+    local use_inventory_item = awful.unlock("UseInventoryItem")
+    local get_item_cooldown13 = GetInventoryItemCooldown("player", 13)
+    local get_item_cooldown14 = GetInventoryItemCooldown("player", 14)
+
+    if target and target.exists then
+        if target.level == -1 then
+            if get_item_cooldown13 == 0 then
+                use_inventory_item(13)
+                return
+            elseif get_item_cooldown14 == 0 then
+                use_inventory_item(14)
+                return
+            end
+        end
+    end
+end
+
 function rotation.APL_PvE()
     if player.mounted or player.buff("Drink") then
         return
@@ -52,6 +70,8 @@ function rotation.APL_PvE()
 
     -- Items
     engineering_gloves()
+    shadow.berserking()
+    trinket()
 
     -- AoE Rotation
     shadow.vampiric_touch("aoe")

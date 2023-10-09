@@ -4,6 +4,9 @@ local Spell = awful.Spell
 local player, target = awful.player, awful.target
 
 awful.Populate({
+    -- Racials
+    berserking        = Spell(26297, { beneficial = true }),
+
     -- Buffs
     shadowform        = Spell(15473, { beneficial = true }),
     inner_fire        = Spell(48168, { beneficial = true }),
@@ -52,6 +55,19 @@ end)
 
 inner_fire:Callback(function(spell)
     if not player.buff("Inner Fire") then
+        if spell:Cast() then
+            awful.alert(spell.name, spell.id)
+            return
+        end
+    end
+end)
+
+berserking:Callback(function(spell)
+    if not rotation.settings.use_cds then
+        return
+    end
+
+    if target.level == -1 and player.buffStacks("Shadow Weaving") == 5 then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
             return
