@@ -113,6 +113,11 @@ vampiric_touch:Callback("aoe", function(spell)
     end
 
     awful.enemies.within(40).filter(filter).loop(function(enemy)
+        -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+        -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
+        if enemy.buff("Shroud of the Occult") then
+            return
+        end
         if enemy.debuffRemains("Vampiric Touch", player) < 1 and target.ttd >= 14 then
             if spell:Cast(enemy) then
                 awful.alert(spell.name, spell.id)
@@ -132,6 +137,11 @@ shadow_word_pain:Callback("aoe", function(spell)
     end
 
     awful.enemies.within(40).filter(filter).loop(function(enemy)
+        -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+        -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
+        if enemy.buff("Shroud of the Occult") then
+            return
+        end
         if not enemy.debuff("Shadow Word: Pain", player) and target.ttd >= 14 then
             if spell:Cast(enemy) then
                 awful.alert(spell.name, spell.id)
@@ -171,7 +181,11 @@ vampiric_touch:Callback("opener", function(spell)
     if player.moving then
         return
     end
-
+    -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
+    if target.buff("Shroud of the Occult") then
+        return
+    end
     if target and target.exists then
         if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") < 2 and target.ttd >= 14 then
             if spell:Cast(target) then
@@ -186,7 +200,11 @@ devouring_plague:Callback("opener", function(spell)
     if not target.debuff("Vampiric Touch", player) then
         return
     end
-
+    -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
+    if target.buff("Shroud of the Occult") then
+        return
+    end
     if target and target.exists then
         if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") <= 2 and target.ttd >= 14 then
             if spell:Cast(target) then
@@ -204,7 +222,6 @@ mind_blast:Callback("opener", function(spell)
     if player.moving then
         return
     end
-
     if target and target.exists then
         if target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") <= 3 then
             if spell:Cast(target) then
@@ -219,7 +236,6 @@ shadowfiend:Callback("opener", function(spell)
     if not rotation.settings.use_cds then
         return
     end
-
     if target and target.exists then
         if target.level == -1 and target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") <= 3 then
             if spell:Cast(target) then
@@ -234,7 +250,6 @@ mind_flay:Callback("opener", function(spell)
     if player.moving then
         return
     end
-
     if target and target.exists then
         if target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") < 5 then
             if spell:Cast(target) then
@@ -246,6 +261,11 @@ mind_flay:Callback("opener", function(spell)
 end)
 
 shadow_word_pain:Callback("opener", function(spell)
+    -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
+    if target.buff("Shroud of the Occult") then
+        return
+    end
     if target and target.exists then
         if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
             if spell:Cast(target) then
@@ -264,7 +284,11 @@ vampiric_touch:Callback(function(spell)
     if player.moving then
         return
     end
-
+    -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
+    if target.buff("Shroud of the Occult") then
+        return
+    end
     if target and target.exists then
         if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
             if spell:Cast(target) then
@@ -276,6 +300,11 @@ vampiric_touch:Callback(function(spell)
 end)
 
 devouring_plague:Callback(function(spell)
+    -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
+    if target.buff("Shroud of the Occult") then
+        return
+    end
     if target and target.exists then
         if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
             if spell:Cast(target) then
@@ -290,7 +319,6 @@ shadowfiend:Callback(function(spell)
     if not rotation.settings.use_cds then
         return
     end
-
     if target and target.exists then
         if target.level == -1 and player.buffStacks("Shadow Weaving") == 5 then
             if spell:Cast(target) then
@@ -308,7 +336,6 @@ mind_blast:Callback(function(spell)
     if player.moving then
         return
     end
-
     if target and target.exists then
         if player.buffStacks("Shadow Weaving") == 5 then
             if spell:Cast(target) then
@@ -323,7 +350,6 @@ mind_flay:Callback(function(spell)
     if player.moving then
         return
     end
-
     if target and target.exists then
         if player.buffStacks("Shadow Weaving") == 5 then
             if spell:Cast(target) then
@@ -335,6 +361,11 @@ mind_flay:Callback(function(spell)
 end)
 
 shadow_word_pain:Callback(function(spell)
+    -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
+    if target.buff("Shroud of the Occult") then
+        return
+    end
     if target and target.exists then
         if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
             if spell:Cast(target) then
@@ -346,6 +377,11 @@ shadow_word_pain:Callback(function(spell)
 end)
 
 shadow_word_death:Callback(function(spell)
+    -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
+    if target.buff("Shroud of the Occult") then
+        return
+    end
     if player.debuff("Profound Darkness") then
         return
     end
