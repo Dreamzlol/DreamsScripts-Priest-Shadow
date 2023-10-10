@@ -113,9 +113,13 @@ vampiric_touch:Callback("aoe", function(spell)
     end
 
     awful.enemies.within(40).filter(filter).loop(function(enemy)
-        -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+        -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
         -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
         if enemy.buff("Shroud of the Occult") then
+            return
+        end
+        -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
+        if enemy.name("Mirror Image") then
             return
         end
         if enemy.debuffRemains("Vampiric Touch", player) < 1 and target.ttd >= 14 then
@@ -137,9 +141,13 @@ shadow_word_pain:Callback("aoe", function(spell)
     end
 
     awful.enemies.within(40).filter(filter).loop(function(enemy)
-        -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+        -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
         -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
         if enemy.buff("Shroud of the Occult") then
+            return
+        end
+        -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
+        if enemy.name("Mirror Image") then
             return
         end
         if not enemy.debuff("Shadow Word: Pain", player) and target.ttd >= 14 then
@@ -161,7 +169,6 @@ mind_sear:Callback("aoe", function(spell)
     if not SettingsCheck(rotation.settings.aoeRotation, "Mind Sear") then
         return
     end
-
     local hasVT, count = awful.enemies.around(target, 10, function(obj) return obj.combat and obj.enemy and not obj.dead and obj.debuff("Vampiric Touch", player) end)
     if target and target.exists then
         if count >= rotation.settings.mind_sear and hasVT then
@@ -181,9 +188,13 @@ vampiric_touch:Callback("opener", function(spell)
     if player.moving then
         return
     end
-    -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
+        return
+    end
+    -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
+    if target.name("Mirror Image") then
         return
     end
     if target and target.exists then
@@ -200,7 +211,7 @@ devouring_plague:Callback("opener", function(spell)
     if not target.debuff("Vampiric Touch", player) then
         return
     end
-    -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
@@ -261,9 +272,13 @@ mind_flay:Callback("opener", function(spell)
 end)
 
 shadow_word_pain:Callback("opener", function(spell)
-    -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
+        return
+    end
+    -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
+    if target.name("Mirror Image") then
         return
     end
     if target and target.exists then
@@ -284,9 +299,13 @@ vampiric_touch:Callback(function(spell)
     if player.moving then
         return
     end
-    -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
+        return
+    end
+    -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
+    if target.name("Mirror Image") then
         return
     end
     if target and target.exists then
@@ -300,7 +319,7 @@ vampiric_touch:Callback(function(spell)
 end)
 
 devouring_plague:Callback(function(spell)
-    -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
@@ -361,9 +380,13 @@ mind_flay:Callback(function(spell)
 end)
 
 shadow_word_pain:Callback(function(spell)
-    -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
+        return
+    end
+    -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
+    if target.name("Mirror Image") then
         return
     end
     if target and target.exists then
@@ -377,11 +400,16 @@ shadow_word_pain:Callback(function(spell)
 end)
 
 shadow_word_death:Callback(function(spell)
-    -- NPC Buff(ICC): Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
     end
+    -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
+    if target.name("Mirror Image") then
+        return
+    end
+    -- (Ulduar) Profound Darkness: Inflicts 750 damage to all enemies, and increases Shadow damage taken by 10% per application.
     if player.debuff("Profound Darkness") then
         return
     end
