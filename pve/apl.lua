@@ -3,6 +3,10 @@ local shadow = rotation.priest.shadow
 local player, target = awful.player, awful.target
 awful.ttd_enabled = true
 
+if not rotation.settings.mode == "PvE" then
+    return
+end
+
 local function engineering_gloves()
     if player.channel == "Mind Flay" then
         return
@@ -60,9 +64,9 @@ function rotation.APL_PvE()
     end
 
     -- Buffs
-    shadow.shadowform()
-    shadow.inner_fire()
-    shadow.vampiric_embrace()
+    shadow.pve_shadowform()
+    shadow.pve_inner_fire()
+    shadow.pve_vampiric_embrace()
 
     if not target.combat and not player.combat then
         return
@@ -70,32 +74,32 @@ function rotation.APL_PvE()
 
     -- Items
     engineering_gloves()
-    shadow.berserking()
+    shadow.pve_berserking()
     trinket()
 
     -- AoE Rotation
-    shadow.vampiric_touch("aoe")
-    shadow.shadow_word_pain("aoe")
-    shadow.mind_sear("aoe")
+    shadow.pve_vampiric_touch("aoe")
+    shadow.pve_shadow_word_pain("aoe")
+    shadow.pve_mind_sear("aoe")
 
     -- Opener Rotation
-    shadow.vampiric_touch("opener")
-    shadow.devouring_plague("opener")
+    shadow.pve_vampiric_touch("opener")
+    shadow.pve_devouring_plague("opener")
     saronite_bomb()
-    shadow.mind_blast("opener")
-    shadow.shadowfiend("opener")
-    shadow.mind_flay("opener")
-    shadow.shadow_word_pain("opener")
+    shadow.pve_mind_blast("opener")
+    shadow.pve_shadowfiend("opener")
+    shadow.pve_mind_flay("opener")
+    shadow.pve_shadow_word_pain("opener")
 
     -- Main Rotation
-    shadow.shadow_word_death()
-    shadow.vampiric_touch()
-    shadow.devouring_plague()
-    shadow.shadowfiend()
-    shadow.mind_blast()
-    shadow.inner_focus()
-    shadow.mind_flay()
-    shadow.shadow_word_pain()
+    shadow.pve_shadow_word_death()
+    shadow.pve_vampiric_touch()
+    shadow.pve_devouring_plague()
+    shadow.pve_shadowfiend()
+    shadow.pve_mind_blast()
+    shadow.pve_inner_focus()
+    shadow.pve_mind_flay()
+    shadow.pve_shadow_word_pain()
 end
 
 return rotation.APL_PvE

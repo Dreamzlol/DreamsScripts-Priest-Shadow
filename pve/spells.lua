@@ -3,26 +3,30 @@ local shadow = rotation.priest.shadow
 local Spell = awful.Spell
 local player, target = awful.player, awful.target
 
+if not rotation.settings.mode == "PvE" then
+    return
+end
+
 awful.Populate({
     -- Racials
-    berserking        = Spell(26297, { beneficial = true }),
+    pve_berserking        = Spell(26297, { beneficial = true }),
 
     -- Buffs
-    shadowform        = Spell(15473, { beneficial = true }),
-    inner_fire        = Spell(48168, { beneficial = true }),
-    vampiric_embrace  = Spell(15286, { beneficial = true }),
-    dispersion        = Spell(47585),
-    inner_focus       = Spell(14751, { beneficial = true }),
+    pve_shadowform        = Spell(15473, { beneficial = true }),
+    pve_inner_fire        = Spell(48168, { beneficial = true }),
+    pve_vampiric_embrace  = Spell(15286, { beneficial = true }),
+    pve_dispersion        = Spell(47585),
+    pve_inner_focus       = Spell(14751, { beneficial = true }),
 
     -- Damage
-    mind_blast        = Spell(48127, { damage = "magic" }),
-    mind_flay         = Spell(48156, { damage = "magic" }),
-    vampiric_touch    = Spell(48160, { damage = "magic", ignoreFacing = true }),
-    devouring_plague  = Spell(48300, { damage = "magic", ignoreFacing = true }),
-    shadow_word_pain  = Spell(2767, { damage = "magic", ignoreFacing = true }),
-    mind_sear         = Spell(53023, { damage = "magic", ignoreFacing = true }),
-    shadowfiend       = Spell(34433, { damage = "magic", ignoreFacing = true }),
-    shadow_word_death = Spell(48158, { damage = "magic", ignoreFacing = true }),
+    pve_mind_blast        = Spell(48127, { damage = "magic" }),
+    pve_mind_flay         = Spell(48156, { damage = "magic" }),
+    pve_vampiric_touch    = Spell(48160, { damage = "magic", ignoreFacing = true }),
+    pve_devouring_plague  = Spell(48300, { damage = "magic", ignoreFacing = true }),
+    pve_shadow_word_pain  = Spell(2767, { damage = "magic", ignoreFacing = true }),
+    pve_mind_sear         = Spell(53023, { damage = "magic", ignoreFacing = true }),
+    pve_shadowfiend       = Spell(34433, { damage = "magic", ignoreFacing = true }),
+    pve_shadow_word_death = Spell(48158, { damage = "magic", ignoreFacing = true }),
 }, shadow, getfenv(1))
 
 local function filter(obj)
@@ -44,7 +48,7 @@ local function SettingsCheck(settingsVar, castId)
     end
 end
 
-shadowform:Callback(function(spell)
+pve_shadowform:Callback(function(spell)
     if not player.buff("Shadowform") then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
@@ -53,7 +57,7 @@ shadowform:Callback(function(spell)
     end
 end)
 
-inner_fire:Callback(function(spell)
+pve_inner_fire:Callback(function(spell)
     if not player.buff("Inner Fire") then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
@@ -62,7 +66,7 @@ inner_fire:Callback(function(spell)
     end
 end)
 
-berserking:Callback(function(spell)
+pve_berserking:Callback(function(spell)
     if not rotation.settings.use_cds then
         return
     end
@@ -75,7 +79,7 @@ berserking:Callback(function(spell)
     end
 end)
 
-inner_focus:Callback(function(spell)
+pve_inner_focus:Callback(function(spell)
     if not rotation.settings.use_cds then
         return
     end
@@ -88,7 +92,7 @@ inner_focus:Callback(function(spell)
     end
 end)
 
-vampiric_embrace:Callback(function(spell)
+pve_vampiric_embrace:Callback(function(spell)
     if not player.buff("Vampiric Embrace") then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
@@ -97,7 +101,7 @@ vampiric_embrace:Callback(function(spell)
     end
 end)
 
-vampiric_touch:Callback("aoe", function(spell)
+pve_vampiric_touch:Callback("aoe", function(spell)
     if not rotation.settings.useAoe then
         return
     end
@@ -116,7 +120,7 @@ vampiric_touch:Callback("aoe", function(spell)
         if not enemy or not enemy.exists then
             return
         end
-        -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
+        -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
         -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
         if enemy.buff("Shroud of the Occult") then
             return
@@ -134,7 +138,7 @@ vampiric_touch:Callback("aoe", function(spell)
     end)
 end)
 
-shadow_word_pain:Callback("aoe", function(spell)
+pve_shadow_word_pain:Callback("aoe", function(spell)
     if not rotation.settings.useAoe then
         return
     end
@@ -147,7 +151,7 @@ shadow_word_pain:Callback("aoe", function(spell)
         if not enemy or not enemy.exists then
             return
         end
-        -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
+        -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
         -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
         if enemy.buff("Shroud of the Occult") then
             return
@@ -165,7 +169,7 @@ shadow_word_pain:Callback("aoe", function(spell)
     end)
 end)
 
-mind_sear:Callback("aoe", function(spell)
+pve_mind_sear:Callback("aoe", function(spell)
     if not rotation.settings.useAoe then
         return
     end
@@ -175,7 +179,8 @@ mind_sear:Callback("aoe", function(spell)
     if not SettingsCheck(rotation.settings.aoeRotation, "Mind Sear") then
         return
     end
-    local hasVT, count = awful.enemies.around(target, 10, function(obj) return obj.combat and obj.enemy and not obj.dead and obj.debuff("Vampiric Touch", player) end)
+    local hasVT, count = awful.enemies.around(target, 10,
+        function(obj) return obj.combat and obj.enemy and not obj.dead and obj.debuff("Vampiric Touch", player) end)
     if target and target.exists then
         if count >= rotation.settings.mind_sear and hasVT then
             if spell:Cast(target) then
@@ -187,7 +192,7 @@ mind_sear:Callback("aoe", function(spell)
 end)
 
 -- Opener Rotation
-vampiric_touch:Callback("opener", function(spell)
+pve_vampiric_touch:Callback("opener", function(spell)
     if not target or not target.exists then
         return
     end
@@ -197,7 +202,7 @@ vampiric_touch:Callback("opener", function(spell)
     if player.moving then
         return
     end
-    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
@@ -214,14 +219,14 @@ vampiric_touch:Callback("opener", function(spell)
     end
 end)
 
-devouring_plague:Callback("opener", function(spell)
+pve_devouring_plague:Callback("opener", function(spell)
     if not target or not target.exists then
         return
     end
     if not target.debuff("Vampiric Touch", player) then
         return
     end
-    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
@@ -234,7 +239,7 @@ devouring_plague:Callback("opener", function(spell)
     end
 end)
 
-mind_blast:Callback("opener", function(spell)
+pve_mind_blast:Callback("opener", function(spell)
     if not rotation.settings.use_mind_blast then
         return
     end
@@ -251,7 +256,7 @@ mind_blast:Callback("opener", function(spell)
     end
 end)
 
-shadowfiend:Callback("opener", function(spell)
+pve_shadowfiend:Callback("opener", function(spell)
     if not rotation.settings.use_cds then
         return
     end
@@ -265,7 +270,7 @@ shadowfiend:Callback("opener", function(spell)
     end
 end)
 
-mind_flay:Callback("opener", function(spell)
+pve_mind_flay:Callback("opener", function(spell)
     if player.moving then
         return
     end
@@ -279,11 +284,11 @@ mind_flay:Callback("opener", function(spell)
     end
 end)
 
-shadow_word_pain:Callback("opener", function(spell)
+pve_shadow_word_pain:Callback("opener", function(spell)
     if not target or not target.exists then
         return
     end
-    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
@@ -301,7 +306,7 @@ shadow_word_pain:Callback("opener", function(spell)
 end)
 
 -- Main Rotation
-vampiric_touch:Callback(function(spell)
+pve_vampiric_touch:Callback(function(spell)
     if not target or not target.exists then
         return
     end
@@ -311,7 +316,7 @@ vampiric_touch:Callback(function(spell)
     if player.moving then
         return
     end
-    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
@@ -328,11 +333,11 @@ vampiric_touch:Callback(function(spell)
     end
 end)
 
-devouring_plague:Callback(function(spell)
+pve_devouring_plague:Callback(function(spell)
     if not target or not target.exists then
         return
     end
-    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
@@ -345,7 +350,7 @@ devouring_plague:Callback(function(spell)
     end
 end)
 
-shadowfiend:Callback(function(spell)
+pve_shadowfiend:Callback(function(spell)
     if not rotation.settings.use_cds then
         return
     end
@@ -359,7 +364,7 @@ shadowfiend:Callback(function(spell)
     end
 end)
 
-mind_blast:Callback(function(spell)
+pve_mind_blast:Callback(function(spell)
     if not rotation.settings.use_mind_blast then
         return
     end
@@ -376,7 +381,7 @@ mind_blast:Callback(function(spell)
     end
 end)
 
-mind_flay:Callback(function(spell)
+pve_mind_flay:Callback(function(spell)
     if player.moving then
         return
     end
@@ -390,11 +395,11 @@ mind_flay:Callback(function(spell)
     end
 end)
 
-shadow_word_pain:Callback(function(spell)
+pve_shadow_word_pain:Callback(function(spell)
     if not target or not target.exists then
         return
     end
-    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
@@ -411,11 +416,11 @@ shadow_word_pain:Callback(function(spell)
     end
 end)
 
-shadow_word_death:Callback(function(spell)
+pve_shadow_word_death:Callback(function(spell)
     if not target or not target.exists then
         return
     end
-    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
+    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return

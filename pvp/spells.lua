@@ -3,38 +3,43 @@ local shadow = rotation.priest.shadow
 local Spell = awful.Spell
 local player, target, focus = awful.player, awful.target, awful.focus
 
+if not rotation.settings.mode == "PvP" then
+    return
+end
+
 awful.Populate({
-    FearWard           = Spell(6346),
-    DesperatePrayer    = Spell(48173, { ignoreMoving = true, beneficial = true }),
-    PowerWordShield    = Spell(48066, { ignoreUsable = true, beneficial = true }),
-    PrayerOfMending    = Spell(48113, { beneficial = true }),
-    BindingHeal        = Spell(48120, { beneficial = true }),
-    FlashHeal          = Spell(48071, { beneficial = true }),
-    Renew              = Spell(48068, { beneficial = true }),
-    Shadowfiend        = Spell(34433, { beneficial = true }),
-    MindBlast          = Spell(48127, { effect = "magic" }),
-    VampiricTouch      = Spell(48160, { ignoreFacing = true, effect = "magic" }),
-    MindFlay           = Spell(48156, { effect = "magic" }),
-    DevouringPlague    = Spell(48300, { ignoreFacing = true, effect = "magic" }),
-    ShadowWordPain     = Spell(48125, { ignoreFacing = true, effect = "magic" }),
-    HolyNova           = Spell(48078, { radius = 10, ignoreCasting = true, ignoreChanneling = true }),
-    ShackleUndead      = Spell(10955, { ignoreFacing = true }),
-    PsychicScream      = Spell(10890, { ignoreFacing = true, cc = "fear", effect = "magic" }),
-    MassDispel         = Spell(32375, { ignoreFacing = true, radius = 15 }),
-    DispelMagic        = Spell(988,   { beneficial = true }),
-    InnerFire          = Spell(48168, { beneficial = true }),
-    AutoAttack         = Spell(6603,  { ignoreChanneling = true, ignoreCasting = true }),
-    ShadowWordDeath    = Spell(48158, { ignoreFacing = true, ignoreCasting = true, ignoreChanneling = true }),
-    AbolishDisease     = Spell(552,   { ignoreFacing = true }),
-    Fade               = Spell(586, { beneficial = true }),
-    Shadowform         = Spell(15473),
-    VampiricEmbrace    = Spell(15286),
-    Silence            = Spell(15487, { effect = "magic", ignoreFacing = true, ignoreCasting = true, ignoreChanneling = true }),
-    PsychicHorror      = Spell(64044, { effect = "magic", cc = "stun", ignoreCasting = true, ignoreChanneling = true }),
-    Dispersion         = Spell(47585),
+    FearWard        = Spell(6346),
+    DesperatePrayer = Spell(48173, { ignoreMoving = true, beneficial = true }),
+    PowerWordShield = Spell(48066, { ignoreUsable = true, beneficial = true }),
+    PrayerOfMending = Spell(48113, { beneficial = true }),
+    BindingHeal     = Spell(48120, { beneficial = true }),
+    FlashHeal       = Spell(48071, { beneficial = true }),
+    Renew           = Spell(48068, { beneficial = true }),
+    Shadowfiend     = Spell(34433, { beneficial = true }),
+    MindBlast       = Spell(48127, { effect = "magic" }),
+    VampiricTouch   = Spell(48160, { ignoreFacing = true, effect = "magic" }),
+    MindFlay        = Spell(48156, { effect = "magic" }),
+    DevouringPlague = Spell(48300, { ignoreFacing = true, effect = "magic" }),
+    ShadowWordPain  = Spell(48125, { ignoreFacing = true, effect = "magic" }),
+    HolyNova        = Spell(48078, { radius = 10, ignoreCasting = true, ignoreChanneling = true }),
+    ShackleUndead   = Spell(10955, { ignoreFacing = true }),
+    PsychicScream   = Spell(10890, { ignoreFacing = true, cc = "fear", effect = "magic" }),
+    MassDispel      = Spell(32375, { ignoreFacing = true, radius = 15 }),
+    DispelMagic     = Spell(988, { beneficial = true }),
+    InnerFire       = Spell(48168, { beneficial = true }),
+    AutoAttack      = Spell(6603, { ignoreChanneling = true, ignoreCasting = true }),
+    ShadowWordDeath = Spell(48158, { ignoreFacing = true, ignoreCasting = true, ignoreChanneling = true }),
+    AbolishDisease  = Spell(552, { ignoreFacing = true }),
+    Fade            = Spell(586, { beneficial = true }),
+    Shadowform      = Spell(15473),
+    VampiricEmbrace = Spell(15286),
+    Silence         = Spell(15487,
+        { effect = "magic", ignoreFacing = true, ignoreCasting = true, ignoreChanneling = true }),
+    PsychicHorror   = Spell(64044, { effect = "magic", cc = "stun", ignoreCasting = true, ignoreChanneling = true }),
+    Dispersion      = Spell(47585),
 
     -- Items
-    engineer_gloves     = Spell(6603, { ignoreFacing = true }),
+    engineer_gloves = Spell(6603, { ignoreFacing = true }),
 }, shadow, getfenv(1))
 
 local function unitFilter(obj)
@@ -539,14 +544,14 @@ ShackleUndead:Callback("lich", function(spell)
     end)
 end)
 
-local fearImmunity = {6346, 49039, 48707, 642, 31224}
+local fearImmunity = { 6346, 49039, 48707, 642, 31224 }
 
 -- Psychic Scream
 PsychicScream:Callback("mutiple", function(spell)
     if awful.enemies.around(player, 6.5, function(enemy)
-        return enemy.los and enemy.ccRemains < 0.1 and not enemy.isPet and not enemy.buffFrom(fearImmunity) and
-                   not tremor
-    end) >= 2 then
+            return enemy.los and enemy.ccRemains < 0.1 and not enemy.isPet and not enemy.buffFrom(fearImmunity) and
+                not tremor
+        end) >= 2 then
         if spell:Cast() then
             awful.alert(spell.name .. " (Mutiple)", spell.id)
             return
