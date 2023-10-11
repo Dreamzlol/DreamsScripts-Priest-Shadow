@@ -113,6 +113,9 @@ vampiric_touch:Callback("aoe", function(spell)
     end
 
     awful.enemies.within(40).filter(filter).loop(function(enemy)
+        if not enemy or not enemy.exists then
+            return
+        end
         -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
         -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
         if enemy.buff("Shroud of the Occult") then
@@ -141,6 +144,9 @@ shadow_word_pain:Callback("aoe", function(spell)
     end
 
     awful.enemies.within(40).filter(filter).loop(function(enemy)
+        if not enemy or not enemy.exists then
+            return
+        end
         -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
         -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
         if enemy.buff("Shroud of the Occult") then
@@ -182,6 +188,9 @@ end)
 
 -- Opener Rotation
 vampiric_touch:Callback("opener", function(spell)
+    if not target or not target.exists then
+        return
+    end
     if player.casting then
         return
     end
@@ -197,17 +206,18 @@ vampiric_touch:Callback("opener", function(spell)
     if target.name("Mirror Image") then
         return
     end
-    if target and target.exists then
-        if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") < 2 and target.ttd >= 14 then
-            if spell:Cast(target) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
+    if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") < 2 and target.ttd >= 14 then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
         end
     end
 end)
 
 devouring_plague:Callback("opener", function(spell)
+    if not target or not target.exists then
+        return
+    end
     if not target.debuff("Vampiric Touch", player) then
         return
     end
@@ -216,12 +226,10 @@ devouring_plague:Callback("opener", function(spell)
     if target.buff("Shroud of the Occult") then
         return
     end
-    if target and target.exists then
-        if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") <= 2 and target.ttd >= 14 then
-            if spell:Cast(target) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
+    if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") <= 2 and target.ttd >= 14 then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
         end
     end
 end)
@@ -272,6 +280,9 @@ mind_flay:Callback("opener", function(spell)
 end)
 
 shadow_word_pain:Callback("opener", function(spell)
+    if not target or not target.exists then
+        return
+    end
     -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
@@ -281,18 +292,19 @@ shadow_word_pain:Callback("opener", function(spell)
     if target.name("Mirror Image") then
         return
     end
-    if target and target.exists then
-        if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
-            if spell:Cast(target) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
+    if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
         end
     end
 end)
 
 -- Main Rotation
 vampiric_touch:Callback(function(spell)
+    if not target or not target.exists then
+        return
+    end
     if player.casting then
         return
     end
@@ -308,28 +320,27 @@ vampiric_touch:Callback(function(spell)
     if target.name("Mirror Image") then
         return
     end
-    if target and target.exists then
-        if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
-            if spell:Cast(target) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
+    if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
         end
     end
 end)
 
 devouring_plague:Callback(function(spell)
+    if not target or not target.exists then
+        return
+    end
     -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
     end
-    if target and target.exists then
-        if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
-            if spell:Cast(target) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
+    if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
         end
     end
 end)
@@ -380,6 +391,9 @@ mind_flay:Callback(function(spell)
 end)
 
 shadow_word_pain:Callback(function(spell)
+    if not target or not target.exists then
+        return
+    end
     -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
@@ -389,17 +403,18 @@ shadow_word_pain:Callback(function(spell)
     if target.name("Mirror Image") then
         return
     end
-    if target and target.exists then
-        if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
-            if spell:Cast(target) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
+    if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
         end
     end
 end)
 
 shadow_word_death:Callback(function(spell)
+    if not target or not target.exists then
+        return
+    end
     -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic, 
     -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
@@ -413,13 +428,10 @@ shadow_word_death:Callback(function(spell)
     if player.debuff("Profound Darkness") then
         return
     end
-
-    if target and target.exists then
-        if player.moving then
-            if spell:Cast(target) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
+    if player.moving then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
         end
     end
 end)
