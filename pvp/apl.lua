@@ -76,5 +76,3 @@ function rotation.APL_PvP()
     shadow.MindFlay("sustain")
     shadow.MindBlast("sustain")
 end
-
-return rotation.APL_PvP

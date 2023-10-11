@@ -29,8 +29,7 @@ awful.Populate({
     Fade            = Spell(586, { beneficial = true }),
     Shadowform      = Spell(15473),
     VampiricEmbrace = Spell(15286),
-    Silence         = Spell(15487,
-        { effect = "magic", ignoreFacing = true, ignoreCasting = true, ignoreChanneling = true }),
+    Silence         = Spell(15487, { effect = "magic", ignoreFacing = true, ignoreCasting = true, ignoreChanneling = true }),
     PsychicHorror   = Spell(64044, { effect = "magic", cc = "stun", ignoreCasting = true, ignoreChanneling = true }),
     Dispersion      = Spell(47585),
 

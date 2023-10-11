@@ -97,5 +97,3 @@ function rotation.APL_PvE()
     shadow.pve_mind_flay()
     shadow.pve_shadow_word_pain()
 end
-
-return rotation.APL_PvE

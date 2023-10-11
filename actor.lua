@@ -1,7 +1,7 @@
 local Unlocker, awful, rotation = ...
 local shadow = rotation.priest.shadow
 local class = awful.player.class2
-local currentMode = nil
+local current_mode = nil
 
 if class ~= "PRIEST" then
     return
@@ -10,20 +10,17 @@ end
 awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Shadow Loaded!")
 awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Version: 2.0.5")
 
-
 shadow:Init(function()
-    if rotation.settings.mode ~= currentMode then
-        currentMode = rotation.settings.mode
-        if rotation.settings.mode == "PvE" then
-            awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Roation Mode: PvE")
-        elseif rotation.settings.mode == "PvP" then
-            awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Roation Mode: PvP")
-        end
+    if rotation.settings.mode ~= current_mode then
+        current_mode = rotation.settings.mode
+        local mode = "|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Roation Mode: " .. current_mode
+        awful.print(mode)
     end
 
-    if rotation.settings.mode == "PvE" then
+    if (rotation.settings.mode == "PvE") then
         rotation.APL_PvE()
-    elseif rotation.settings.mode == "PvP" then
+    end
+    if (rotation.settings.mode == "PvP") then
         rotation.APL_PvP()
     end
 end)
