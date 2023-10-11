@@ -203,7 +203,7 @@ vampiric_touch:Callback("opener", function(spell)
         return
     end
     -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
-    if target.name("Mirror Image") then
+    if target.name == "Mirror Image" then
         return
     end
     if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") < 2 and target.ttd >= 14 then
@@ -289,7 +289,7 @@ shadow_word_pain:Callback("opener", function(spell)
         return
     end
     -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
-    if target.name("Mirror Image") then
+    if target.name == "Mirror Image" then
         return
     end
     if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
@@ -317,7 +317,7 @@ vampiric_touch:Callback(function(spell)
         return
     end
     -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
-    if target.name("Mirror Image") then
+    if target.name == "Mirror Image" then
         return
     end
     if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
@@ -400,7 +400,7 @@ shadow_word_pain:Callback(function(spell)
         return
     end
     -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
-    if target.name("Mirror Image") then
+    if target.name == "Mirror Image" then
         return
     end
     if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
@@ -421,7 +421,7 @@ shadow_word_death:Callback(function(spell)
         return
     end
     -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
-    if target.name("Mirror Image") then
+    if target.name == "Mirror Image" then
         return
     end
     -- (Ulduar) Profound Darkness: Inflicts 750 damage to all enemies, and increases Shadow damage taken by 10% per application.
