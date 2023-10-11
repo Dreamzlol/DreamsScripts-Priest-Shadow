@@ -3,10 +3,6 @@ local shadow = rotation.priest.shadow
 local player, target = awful.player, awful.target
 awful.ttd_enabled = true
 
-if not rotation.settings.mode == "PvE" then
-    return
-end
-
 local function engineering_gloves()
     if player.channel == "Mind Flay" then
         return

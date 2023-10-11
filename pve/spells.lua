@@ -3,10 +3,6 @@ local shadow = rotation.priest.shadow
 local Spell = awful.Spell
 local player, target = awful.player, awful.target
 
-if not rotation.settings.mode == "PvE" then
-    return
-end
-
 awful.Populate({
     -- Racials
     pve_berserking        = Spell(26297, { beneficial = true }),
