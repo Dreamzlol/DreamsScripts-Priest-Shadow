@@ -126,7 +126,7 @@ pve_vampiric_touch:Callback("aoe", function(spell)
             return
         end
         -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
-        if enemy.name("Mirror Image") then
+        if enemy.name == "Mirror Image" then
             return
         end
         if enemy.debuffRemains("Vampiric Touch", player) < 1 and target.ttd >= 14 then
@@ -157,7 +157,7 @@ pve_shadow_word_pain:Callback("aoe", function(spell)
             return
         end
         -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
-        if enemy.name("Mirror Image") then
+        if enemy.name == "Mirror Image" then
             return
         end
         if not enemy.debuff("Shadow Word: Pain", player) and target.ttd >= 14 then
