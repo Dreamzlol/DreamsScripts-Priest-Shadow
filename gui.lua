@@ -137,6 +137,17 @@ Spells:Dropdown({
     default = 4
 })
 
+Spells:Slider({
+    text = awful.textureEscape(48300) .. " TTD Timer",
+    var = "ttd_timer",
+    min = 0,
+    max = 60,
+    step = 1,
+    default = 20,
+    valueType = " secs",
+    tooltip = "Time To Die for Dots in seconds. Example: If the unit lives longer than 20 Seconds, then it should cast Dots. (Vampiric Touch, Devouring Plague, Shadow Word: Pain)"
+})
+
 local Toggles = gui:Tab(awful.textureEscape(8105, 16) .. " Toggles")
 Toggles:Text({
     text = "|cff00B5FFToggles (PvE)",
@@ -147,7 +158,7 @@ Toggles:Text({
 Toggles:Checkbox({
     text = "Use AoE (Multidot)",
     var = "useAoe",
-    tooltip = "AoE / Multidot enemies near you.",
+    tooltip = "AoE / Multidot enemies near you",
     default = true
 })
 

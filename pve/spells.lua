@@ -125,7 +125,7 @@ pve_vampiric_touch:Callback("aoe", function(spell)
         if enemy.name == "Mirror Image" then
             return
         end
-        if enemy.debuffRemains("Vampiric Touch", player) < 1 and target.ttd >= 14 then
+        if enemy.debuffRemains("Vampiric Touch", player) < 1 and target.ttd >= rotation.settings.ttd_timer then
             if spell:Cast(enemy) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -156,7 +156,7 @@ pve_shadow_word_pain:Callback("aoe", function(spell)
         if enemy.name == "Mirror Image" then
             return
         end
-        if not enemy.debuff("Shadow Word: Pain", player) and target.ttd >= 14 then
+        if not enemy.debuff("Shadow Word: Pain", player) and target.ttd >= rotation.settings.ttd_timer then
             if spell:Cast(enemy) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -207,7 +207,7 @@ pve_vampiric_touch:Callback("opener", function(spell)
     if target.name == "Mirror Image" then
         return
     end
-    if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") < 2 and target.ttd >= 14 then
+    if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") < 2 and target.ttd >= rotation.settings.ttd_timer then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -227,7 +227,7 @@ pve_devouring_plague:Callback("opener", function(spell)
     if target.buff("Shroud of the Occult") then
         return
     end
-    if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") <= 2 and target.ttd >= 14 then
+    if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") <= 2 and target.ttd >= rotation.settings.ttd_timer then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -293,7 +293,7 @@ pve_shadow_word_pain:Callback("opener", function(spell)
     if target.name == "Mirror Image" then
         return
     end
-    if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
+    if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= rotation.settings.ttd_timer then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -321,7 +321,7 @@ pve_vampiric_touch:Callback(function(spell)
     if target.name == "Mirror Image" then
         return
     end
-    if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
+    if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= rotation.settings.ttd_timer then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -338,7 +338,7 @@ pve_devouring_plague:Callback(function(spell)
     if target.buff("Shroud of the Occult") then
         return
     end
-    if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
+    if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= rotation.settings.ttd_timer then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -404,7 +404,7 @@ pve_shadow_word_pain:Callback(function(spell)
     if target.name == "Mirror Image" then
         return
     end
-    if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= 14 then
+    if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= rotation.settings.ttd_timer then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return

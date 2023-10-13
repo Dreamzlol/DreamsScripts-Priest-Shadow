@@ -54,7 +54,7 @@ local function trinket()
     end
 end
 
-function rotation.APL_PvE()
+function rotation.apl_pve()
     if player.mounted or player.buff("Drink") then
         return
     end
