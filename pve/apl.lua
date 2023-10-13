@@ -12,7 +12,7 @@ local function engineering_gloves()
     local start = GetInventoryItemCooldown("player", 10)
 
     if target and target.exists then
-        if target.level == -1 and start == 0 then
+        if target.level == -1 or (target.level == 82 or target.level == 81 and player.buff("Luck of the Draw")) and start == 0 then
             if UseInventoryItem(10) then
                 awful.alert("Hyperspeed Accelerators", 54758)
                 return
@@ -42,7 +42,7 @@ local function trinket()
     local get_item_cooldown14 = GetInventoryItemCooldown("player", 14)
 
     if target and target.exists then
-        if target.level == -1 then
+        if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
             if get_item_cooldown13 == 0 then
                 use_inventory_item(13)
                 return
@@ -77,12 +77,14 @@ function rotation.apl_pve()
     shadow.pve_inner_fire()
     shadow.pve_vampiric_embrace()
 
+    auto_target()
+
     if not target.combat and not player.combat then
         return
     end
 
-    auto_target()
     shadow.pve_shadow_word_death("web wrap") -- Dungeon Logic
+    shadow.pve_mind_flay("mirror image") -- Dungeon Logic
 
     -- Items
     engineering_gloves()

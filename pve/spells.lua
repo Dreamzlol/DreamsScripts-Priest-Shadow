@@ -44,6 +44,30 @@ local function SettingsCheck(settingsVar, castId)
     end
 end
 
+awful.Draw(function(draw)
+    if not rotation.settings.use_draw_ttd then
+        return
+    end
+    draw:SetColor(255, 102, 255, 100)
+    awful.enemies.loop(function(enemy)
+        if not enemy or not enemy.exists then
+            return
+        end
+        if not enemy.los and enemy.distance > 40 then
+            return
+        end
+        if enemy.ttd > 600 then
+            return
+        end
+        if enemy.combat and not enemy.dead then
+            local x, y, z = enemy.position()
+            local timer = string.format("%.0f", enemy.ttd)
+
+            draw:Text("TTD: " .. timer .. "secs", "GameFontNormal", x, y, z)
+        end
+    end)
+end)
+
 pve_shadowform:Callback(function(spell)
     if not player.buff("Shadowform") then
         if spell:Cast() then
@@ -66,8 +90,7 @@ pve_berserking:Callback(function(spell)
     if not rotation.settings.use_cds then
         return
     end
-
-    if target.level == -1 and player.buffStacks("Shadow Weaving") == 5 then
+    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) and player.buffStacks("Shadow Weaving") == 5 then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
             return
@@ -79,8 +102,7 @@ pve_inner_focus:Callback(function(spell)
     if not rotation.settings.use_cds then
         return
     end
-
-    if target.level == -1 and player.buffStacks("Shadow Weaving") == 5 then
+    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) and player.buffStacks("Shadow Weaving") == 5 then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
             return
@@ -156,7 +178,7 @@ pve_shadow_word_pain:Callback("aoe", function(spell)
         if enemy.name == "Mirror Image" then
             return
         end
-        if not enemy.debuff("Shadow Word: Pain", player) and target.ttd >= rotation.settings.ttd_timer then
+        if not enemy.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= rotation.settings.ttd_timer then
             if spell:Cast(enemy) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -257,7 +279,7 @@ pve_shadowfiend:Callback("opener", function(spell)
         return
     end
     if target and target.exists then
-        if target.level == -1 and target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") <= 3 then
+        if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) and target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") <= 3 then
             if spell:Cast(target) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -351,7 +373,7 @@ pve_shadowfiend:Callback(function(spell)
         return
     end
     if target and target.exists then
-        if target.level == -1 and player.buffStacks("Shadow Weaving") == 5 then
+        if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) and player.buffStacks("Shadow Weaving") == 5 then
             if spell:Cast(target) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -389,6 +411,26 @@ pve_mind_flay:Callback(function(spell)
             end
         end
     end
+end)
+
+pve_mind_flay:Callback("mirror image", function(spell)
+    if not player.buff("Luck of the Draw") then
+        return
+    end
+    if player.moving then
+        return
+    end
+    awful.enemies.loop(function(enemy)
+        if not enemy then
+            return
+        end
+        if enemy.name == "Mirror Image" then
+            if spell:Cast(enemy) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
+        end
+    end)
 end)
 
 pve_shadow_word_pain:Callback(function(spell)
@@ -438,6 +480,9 @@ pve_shadow_word_death:Callback(function(spell)
 end)
 
 pve_shadow_word_death:Callback("web wrap", function(spell)
+    if not player.buff("Luck of the Draw") then
+        return
+    end
     if player.debuff("Web Wrap") then
         return
     end

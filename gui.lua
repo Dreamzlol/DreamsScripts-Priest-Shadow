@@ -42,16 +42,16 @@ statusFrame:Button({
 })
 
 statusFrame:Button({
-    spellId = 34433,
-    var = "use_cds",
-    text = "CDs",
+    spellId = 14325,
+    var = "use_auto_target",
+    text = "Auto Target",
     size = 30
 })
 
 statusFrame:Button({
-    spellId = 14325,
-    var = "use_auto_target",
-    text = "Auto Target",
+    spellId = 34433,
+    var = "use_cds",
+    text = "CDs",
     size = 30
 })
 
@@ -188,6 +188,13 @@ Toggles:Checkbox({
     var = "use_auto_target",
     tooltip = "Use Auto Target. It will Auto Target the lowest unit in 40 yards",
     default = true
+})
+
+Toggles:Checkbox({
+    text = "Show TTD Timer",
+    var = "use_draw_ttd",
+    tooltip = "Shows the Time To Die Timer on mobs",
+    default = false
 })
 
 local Macros = gui:Tab(awful.textureEscape(47585, 16) .. " Macros")
