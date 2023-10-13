@@ -82,6 +82,7 @@ function rotation.apl_pve()
     end
 
     auto_target()
+    shadow.pve_shadow_word_death("web wrap") -- Dungeon Logic
 
     -- Items
     engineering_gloves()

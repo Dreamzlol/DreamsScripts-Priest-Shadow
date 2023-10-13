@@ -436,3 +436,20 @@ pve_shadow_word_death:Callback(function(spell)
         end
     end
 end)
+
+pve_shadow_word_death:Callback("web wrap", function(spell)
+    if player.debuff("Web Wrap") then
+        return
+    end
+    awful.units.loop(function(obj)
+        if not obj then
+            return
+        end
+        if obj.name == "Web Wrap" then
+            if spell:Cast(obj) then
+                awful.alert(spell.name .. " (Web Wrap)", spell.id)
+                return
+            end
+        end
+    end)
+end)
