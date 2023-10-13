@@ -54,6 +54,19 @@ local function trinket()
     end
 end
 
+local function auto_target()
+    if not rotation.settings.use_auto_target then
+        return
+    end
+    local enemy = awful.enemies.within(40).lowest
+    if not enemy or not enemy.exists then
+        return
+    end
+    if enemy.combat and not enemy.dead then
+        enemy.setTarget()
+    end
+end
+
 function rotation.apl_pve()
     if player.mounted or player.buff("Drink") then
         return
@@ -67,6 +80,8 @@ function rotation.apl_pve()
     if not target.combat and not player.combat then
         return
     end
+
+    auto_target()
 
     -- Items
     engineering_gloves()

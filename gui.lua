@@ -44,7 +44,14 @@ statusFrame:Button({
 statusFrame:Button({
     spellId = 34433,
     var = "use_cds",
-    text = "Use CDs",
+    text = "CDs",
+    size = 30
+})
+
+statusFrame:Button({
+    spellId = 14325,
+    var = "use_auto_target",
+    text = "Auto Target",
     size = 30
 })
 
@@ -173,6 +180,13 @@ Toggles:Checkbox({
     text = "Use Mind Blast",
     var = "use_mind_blast",
     tooltip = "Use Mind Blast",
+    default = true
+})
+
+Toggles:Checkbox({
+    text = "Use Auto Target",
+    var = "use_auto_target",
+    tooltip = "Use Auto Target. It will Auto Target the lowest unit in 40 yards",
     default = true
 })
 
