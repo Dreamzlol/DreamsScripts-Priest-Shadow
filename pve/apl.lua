@@ -12,7 +12,7 @@ local function engineering_gloves()
     local start = GetInventoryItemCooldown("player", 10)
 
     if target and target.exists then
-        if target.level == -1 or (target.level == 82 or target.level == 81 and player.buff("Luck of the Draw")) and start == 0 then
+        if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) and start == 0 then
             if UseInventoryItem(10) then
                 awful.alert("Hyperspeed Accelerators", 54758)
                 return
@@ -84,6 +84,7 @@ function rotation.apl_pve()
     end
 
     shadow.pve_shadow_word_death("web wrap") -- Dungeon Logic
+    shadow.pve_mind_flay("web wrap") -- Dungeon Logic
     shadow.pve_mind_flay("mirror image") -- Dungeon Logic
 
     -- Items

@@ -150,9 +150,9 @@ Spells:Slider({
     min = 0,
     max = 60,
     step = 1,
-    default = 20,
+    default = 14,
     valueType = " secs",
-    tooltip = "Time To Die for Dots in seconds. Example: If the unit lives longer than 20 Seconds, then it should cast Dots. (Vampiric Touch, Devouring Plague, Shadow Word: Pain)"
+    tooltip = "Time To Die for Dots in seconds. Example: If the unit lives longer than 14 Seconds, then it should cast Dots. (Vampiric Touch, Devouring Plague, Shadow Word: Pain)"
 })
 
 local Toggles = gui:Tab(awful.textureEscape(8105, 16) .. " Toggles")
