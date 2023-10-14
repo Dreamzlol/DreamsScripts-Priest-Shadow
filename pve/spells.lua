@@ -2,6 +2,12 @@ local Unlocker, awful, rotation = ...
 local shadow = rotation.priest.shadow
 local Spell = awful.Spell
 local player, target = awful.player, awful.target
+local NewItem = awful.NewItem
+
+local getItemId = function(slot)
+    itemId = GetInventoryItemID("player", slot)
+    return itemId
+end
 
 awful.Populate({
     -- Racials
@@ -23,11 +29,76 @@ awful.Populate({
     pve_mind_sear         = Spell(53023, { damage = "magic", ignoreFacing = true }),
     pve_shadowfiend       = Spell(34433, { damage = "magic", ignoreFacing = true }),
     pve_shadow_word_death = Spell(48158, { damage = "magic", ignoreFacing = true }),
+
+    -- Items
+    pve_trinket_1         = NewItem(getItemId(13)),
+    pve_trinket_2         = NewItem(getItemId(14)),
+    pve_inventory_slot_10 = NewItem(getItemId(10)),
+    pve_saronite_bomb     = NewItem(41119),
 }, shadow, getfenv(1))
 
 local function filter(obj)
     return obj.combat and obj.los and obj.distance < 40 and obj.enemy and not obj.dead
 end
+
+pve_saronite_bomb:Update(function(item)
+    if not rotation.settings.useSaroniteBomb then
+        return
+    end
+    if not target or not target.exists then
+        return
+    end
+
+    if item:Usable() and target.level == -1 then
+        if item:UseAoE(target) then
+            awful.alert(item.name, item.id)
+        end
+    end
+end)
+
+pve_inventory_slot_10:Update(function(item)
+    if player.channel == "Mind Flay" then
+        return
+    end
+    if not target or not target.exists then
+        return
+    end
+
+    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
+        if item:Usable() then
+            if item:Use() then
+                awful.alert("Hyperspeed Accelerators", 54758)
+                return
+            end
+        end
+    end
+end)
+
+pve_trinket_1:Update(function(item)
+    if not target or not target.exists then
+        return
+    end
+
+    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
+        if item:Usable() then
+            item:Use()
+            return
+        end
+    end
+end)
+
+pve_trinket_2:Update(function(item)
+    if not target or not target.exists then
+        return
+    end
+
+    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
+        if item:Usable() then
+            item:Use()
+            return
+        end
+    end
+end)
 
 local function SettingsCheck(settingsVar, castId)
     for k, v in pairs(settingsVar) do
@@ -129,7 +200,6 @@ pve_vampiric_touch:Callback("aoe", function(spell)
     if player.moving then
         return
     end
-
     if not SettingsCheck(rotation.settings.aoeRotation, "Vampiric Touch") then
         return
     end
