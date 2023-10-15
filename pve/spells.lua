@@ -48,6 +48,9 @@ pve_saronite_bomb:Update(function(item)
     if not target or not target.exists then
         return
     end
+    if not item:Usable() then
+        return
+    end
 
     if item:Usable() and target.level == -1 then
         if item:UseAoE(target) then
@@ -57,13 +60,18 @@ pve_saronite_bomb:Update(function(item)
 end)
 
 pve_inventory_slot_10:Update(function(item)
-    if player.channel == "Mind Flay" then
+    if not rotation.settings.use_gloves then
         return
     end
     if not target or not target.exists then
         return
     end
-
+    if player.moving then
+        return
+    end
+    if player.channel == "Mind Flay" then
+        return
+    end
     if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
         if item:Usable() then
             if item:Use() then
@@ -78,6 +86,9 @@ pve_trinket_1:Update(function(item)
     if not target or not target.exists then
         return
     end
+    if not item:Usable() then
+        return
+    end
 
     if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
         if item:Usable() then
@@ -88,6 +99,9 @@ pve_trinket_1:Update(function(item)
 end)
 
 pve_trinket_2:Update(function(item)
+    if not item:Usable() then
+        return
+    end
     if not target or not target.exists then
         return
     end
@@ -171,6 +185,9 @@ end)
 
 pve_inner_focus:Callback(function(spell)
     if not rotation.settings.use_cds then
+        return
+    end
+    if player.moving then
         return
     end
     if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) and player.buffStacks("Shadow Weaving") == 5 then

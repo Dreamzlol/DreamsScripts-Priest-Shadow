@@ -184,6 +184,13 @@ Toggles:Checkbox({
 })
 
 Toggles:Checkbox({
+    text = "Use Hyperspeed Accelerators",
+    var = "use_gloves",
+    tooltip = "Use Engineering Gloves (Hyperspeed Accelerators)",
+    default = true
+})
+
+Toggles:Checkbox({
     text = "Use Auto Target",
     var = "use_auto_target",
     tooltip = "Use Auto Target. It will Auto Target the lowest unit in 40 yards",
