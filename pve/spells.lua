@@ -31,9 +31,9 @@ awful.Populate({
     pve_shadow_word_death = Spell(48158, { damage = "magic", ignoreFacing = true }),
 
     -- Items
-    pve_trinket_1         = NewItem(getItemId(13)),
-    pve_trinket_2         = NewItem(getItemId(14)),
     pve_inventory_slot_10 = NewItem(getItemId(10)),
+    pve_inventory_slot_13 = NewItem(getItemId(13)),
+    pve_inventory_slot_14 = NewItem(getItemId(14)),
     pve_saronite_bomb     = NewItem(41119),
 }, shadow, getfenv(1))
 
@@ -72,42 +72,50 @@ pve_inventory_slot_10:Update(function(item)
     if player.channel == "Mind Flay" then
         return
     end
-    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
-        if item:Usable() then
-            if item:Use() then
-                awful.alert("Hyperspeed Accelerators", 54758)
-                return
-            end
-        end
-    end
-end)
 
-pve_trinket_1:Update(function(item)
-    if not target or not target.exists then
-        return
-    end
-    if not item:Usable() then
-        return
-    end
-
-    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
-        if item:Usable() then
+    local _, duration, enable = GetInventoryItemCooldown("player", 10)
+    if enable == 1 and duration == 0 then
+        if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
             item:Use()
             return
         end
     end
 end)
 
-pve_trinket_2:Update(function(item)
-    if not item:Usable() then
-        return
-    end
+pve_inventory_slot_13:Update(function(item)
     if not target or not target.exists then
         return
     end
+    if player.moving then
+        return
+    end
+    if player.channel == "Mind Flay" then
+        return
+    end
 
-    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
-        if item:Usable() then
+    local _, duration, enable = GetInventoryItemCooldown("player", 13)
+    if enable == 1 and duration == 0 then
+        if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
+            item:Use()
+            return
+        end
+    end
+end)
+
+pve_inventory_slot_14:Update(function(item)
+    if not target or not target.exists then
+        return
+    end
+    if player.moving then
+        return
+    end
+    if player.channel == "Mind Flay" then
+        return
+    end
+
+    local _, duration, enable = GetInventoryItemCooldown("player", 14)
+    if enable == 1 and duration == 0 then
+        if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
             item:Use()
             return
         end
@@ -175,7 +183,10 @@ pve_berserking:Callback(function(spell)
     if not rotation.settings.use_cds then
         return
     end
-    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) and player.buffStacks("Shadow Weaving") == 5 then
+    if not (player.buffStacks("Shadow Weaving") == 5) then
+        return
+    end
+    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
             return
@@ -190,7 +201,10 @@ pve_inner_focus:Callback(function(spell)
     if player.moving then
         return
     end
-    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) and player.buffStacks("Shadow Weaving") == 5 then
+    if not (player.buffStacks("Shadow Weaving") == 5) then
+        return
+    end
+    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
             return
@@ -265,7 +279,10 @@ pve_shadow_word_pain:Callback("aoe", function(spell)
         if enemy.name == "Mirror Image" then
             return
         end
-        if not enemy.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= rotation.settings.ttd_timer then
+        if not (player.buffStacks("Shadow Weaving") == 5) then
+            return
+        end
+        if not enemy.debuff("Shadow Word: Pain", player) and target.ttd >= rotation.settings.ttd_timer then
             if spell:Cast(enemy) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -316,7 +333,10 @@ pve_vampiric_touch:Callback("opener", function(spell)
     if target.name == "Mirror Image" then
         return
     end
-    if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") < 2 and target.ttd >= rotation.settings.ttd_timer then
+    if not (player.buffStacks("Shadow Weaving") < 2) then
+        return
+    end
+    if target.debuffRemains("Vampiric Touch", player) < 1 and target.ttd >= rotation.settings.ttd_timer then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -336,7 +356,10 @@ pve_devouring_plague:Callback("opener", function(spell)
     if target.buff("Shroud of the Occult") then
         return
     end
-    if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") <= 2 and target.ttd >= rotation.settings.ttd_timer then
+    if not (player.buffStacks("Shadow Weaving") <= 2) then
+        return
+    end
+    if not target.debuff("Devouring Plague", player) and target.ttd >= rotation.settings.ttd_timer then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -348,15 +371,19 @@ pve_mind_blast:Callback("opener", function(spell)
     if not rotation.settings.use_mind_blast then
         return
     end
+    if not target or not target.exists then
+        return
+    end
     if player.moving then
         return
     end
-    if target and target.exists then
-        if target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") <= 3 then
-            if spell:Cast(target) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
+    if not (player.buffStacks("Shadow Weaving") <= 3) then
+        return
+    end
+    if target.debuff("Vampiric Touch", player) then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
         end
     end
 end)
@@ -365,12 +392,20 @@ pve_shadowfiend:Callback("opener", function(spell)
     if not rotation.settings.use_cds then
         return
     end
-    if target and target.exists then
-        if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) and target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") <= 3 then
-            if spell:Cast(target) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
+    if not target or not target.exists then
+        return
+    end
+    if not target.debuff("Vampiric Touch", player) then
+        return
+    end
+    if not (player.buffStacks("Shadow Weaving") <= 3) then
+        return
+    end
+
+    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
         end
     end
 end)
@@ -379,12 +414,16 @@ pve_mind_flay:Callback("opener", function(spell)
     if player.moving then
         return
     end
-    if target and target.exists then
-        if target.debuff("Vampiric Touch", player) and player.buffStacks("Shadow Weaving") < 5 then
-            if spell:Cast(target) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
+    if not target or not target.exists then
+        return
+    end
+    if not (player.buffStacks("Shadow Weaving") < 5) then
+        return
+    end
+    if target.debuff("Vampiric Touch", player) then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
         end
     end
 end)
@@ -402,7 +441,10 @@ pve_shadow_word_pain:Callback("opener", function(spell)
     if target.name == "Mirror Image" then
         return
     end
-    if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= rotation.settings.ttd_timer then
+    if not (player.buffStacks("Shadow Weaving") == 5) then
+        return
+    end
+    if not target.debuff("Shadow Word: Pain", player) and target.ttd >= rotation.settings.ttd_timer then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -430,7 +472,10 @@ pve_vampiric_touch:Callback(function(spell)
     if target.name == "Mirror Image" then
         return
     end
-    if target.debuffRemains("Vampiric Touch", player) < 1 and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= rotation.settings.ttd_timer then
+    if not (player.buffStacks("Shadow Weaving") == 5) then
+        return
+    end
+    if target.debuffRemains("Vampiric Touch", player) < 1 and target.ttd >= rotation.settings.ttd_timer then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -447,7 +492,10 @@ pve_devouring_plague:Callback(function(spell)
     if target.buff("Shroud of the Occult") then
         return
     end
-    if not target.debuff("Devouring Plague", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= rotation.settings.ttd_timer then
+    if not (player.buffStacks("Shadow Weaving") == 5) then
+        return
+    end
+    if not target.debuff("Devouring Plague", player) and target.ttd >= rotation.settings.ttd_timer then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -459,12 +507,16 @@ pve_shadowfiend:Callback(function(spell)
     if not rotation.settings.use_cds then
         return
     end
-    if target and target.exists then
-        if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) and player.buffStacks("Shadow Weaving") == 5 then
-            if spell:Cast(target) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
+    if not target or not target.exists then
+        return
+    end
+    if not (player.buffStacks("Shadow Weaving") == 5) then
+        return
+    end
+    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
         end
     end
 end)
@@ -473,30 +525,34 @@ pve_mind_blast:Callback(function(spell)
     if not rotation.settings.use_mind_blast then
         return
     end
+    if not target or not target.exists then
+        return
+    end
     if player.moving then
         return
     end
-    if target and target.exists then
-        if player.buffStacks("Shadow Weaving") == 5 then
-            if spell:Cast(target) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
-        end
+    if not (player.buffStacks("Shadow Weaving") == 5) then
+        return
+    end
+    if spell:Cast(target) then
+        awful.alert(spell.name, spell.id)
+        return
     end
 end)
 
 pve_mind_flay:Callback(function(spell)
+    if not target or not target.exists then
+        return
+    end
     if player.moving then
         return
     end
-    if target and target.exists then
-        if player.buffStacks("Shadow Weaving") == 5 then
-            if spell:Cast(target) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
-        end
+    if not (player.buffStacks("Shadow Weaving") == 5) then
+        return
+    end
+    if spell:Cast(target) then
+        awful.alert(spell.name, spell.id)
+        return
     end
 end)
 
@@ -533,7 +589,10 @@ pve_shadow_word_pain:Callback(function(spell)
     if target.name == "Mirror Image" then
         return
     end
-    if not target.debuff("Shadow Word: Pain", player) and player.buffStacks("Shadow Weaving") == 5 and target.ttd >= rotation.settings.ttd_timer then
+    if not (player.buffStacks("Shadow Weaving") == 5) then
+        return
+    end
+    if not target.debuff("Shadow Word: Pain", player) and target.ttd >= rotation.settings.ttd_timer then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return

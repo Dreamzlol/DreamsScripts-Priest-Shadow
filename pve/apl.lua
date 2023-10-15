@@ -38,10 +38,10 @@ function rotation.apl_pve()
 
     -- Items
     shadow.pve_saronite_bomb()
-    shadow.pve_inventory_slot_10()
     shadow.pve_berserking()
-    shadow.pve_trinket_1()
-    shadow.pve_trinket_2()
+    shadow.pve_inventory_slot_10()
+    shadow.pve_inventory_slot_13()
+    shadow.pve_inventory_slot_14()
 
     -- AoE Rotation
     shadow.pve_vampiric_touch("aoe")
