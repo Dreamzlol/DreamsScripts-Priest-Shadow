@@ -309,19 +309,33 @@ pve_mind_sear:Callback("aoe", function(spell)
     if not rotation.settings.aoeRotation["Mind Sear"] then
         return
     end
-    local count = awful.enemies.around(target, 15, function(obj) return obj.combat and obj.enemy and not obj.dead end)
+    local count = awful.enemies.around(target, 12, function(obj) return obj.combat and obj.enemy and not obj.dead end)
     if count >= 7 then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
         end
-    else
-        local vtCount = awful.enemies.around(target, 15, function(obj) return obj.combat and obj.enemy and not obj.dead and obj.debuff("Vampiric Touch", player) end)
-        if vtCount >= 3 then
-            if spell:Cast(target) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
+    end
+end)
+
+pve_mind_sear:Callback("aoe_vt", function(spell)
+    if not rotation.settings.useAoe then
+        return
+    end
+    if not target or not target.exists then
+        return
+    end
+    if player.moving then
+        return
+    end
+    if not rotation.settings.aoeRotation["Mind Sear"] then
+        return
+    end
+    local count = awful.enemies.around(target, 12, function(obj) return obj.combat and obj.enemy and not obj.dead and obj.debuff("Vampiric Touch", player) end)
+    if count >= 3 then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
         end
     end
 end)

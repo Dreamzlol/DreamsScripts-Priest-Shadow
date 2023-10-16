@@ -40,9 +40,10 @@ function rotation.apl_pve()
     shadow.pve_saronite_bomb()
 
     -- AoE Rotation
+    shadow.pve_mind_sear("aoe")
     shadow.pve_vampiric_touch("aoe")
     shadow.pve_shadow_word_pain("aoe")
-    shadow.pve_mind_sear("aoe")
+    shadow.pve_mind_sear("aoe_vt")
 
     -- Opener Rotation
     shadow.pve_vampiric_touch("opener")
