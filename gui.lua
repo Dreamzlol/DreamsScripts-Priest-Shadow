@@ -127,32 +127,15 @@ Spells:Dropdown({
     default = { "Vampiric Touch", "Shadow Word: Pain", "Mind Sear" }
 })
 
-Spells:Dropdown({
-    var = "mind_sear",
-    tooltip = "Use Mind Sear if more than selected enemies are around target. Default: 4",
-    options = {
-        { label = "> 1 enemies", value = 1, tooltip = "Use Mind Sear if 1 enemies are around target" },
-        { label = "> 2 enemies", value = 2, tooltip = "Use Mind Sear if 2 enemies are around target" },
-        { label = "> 3 enemies", value = 3, tooltip = "Use Mind Sear if 3 enemies are around target" },
-        { label = "> 4 enemies", value = 4, tooltip = "Use Mind Sear if 4 enemies are around target" },
-        { label = "> 5 enemies", value = 5, tooltip = "Use Mind Sear if 5 enemies are around target" },
-        { label = "> 6 enemies", value = 6, tooltip = "Use Mind Sear if 6 enemies are around target" },
-        { label = "> 7 enemies", value = 7, tooltip = "Use Mind Sear if 7 enemies are around target" },
-        { label = "> 8 enemies", value = 8, tooltip = "Use Mind Sear if 8 enemies are around target" },
-    },
-    header = awful.textureEscape(53023) .. " Mind Sear",
-    default = 4
-})
-
 Spells:Slider({
     text = awful.textureEscape(48300) .. " TTD Timer",
     var = "ttd_timer",
     min = 0,
     max = 60,
     step = 1,
-    default = 14,
+    default = 8,
     valueType = " secs",
-    tooltip = "Time To Die for Dots in seconds. Example: If the unit lives longer than 14 Seconds, then it should cast Dots. (Vampiric Touch, Devouring Plague, Shadow Word: Pain)"
+    tooltip = "Time To Die for Dots in seconds. Example: If the unit lives longer than 8 Seconds, then it should cast Dots. (Vampiric Touch, Devouring Plague, Shadow Word: Pain)"
 })
 
 local Toggles = gui:Tab(awful.textureEscape(8105, 16) .. " Toggles")
@@ -180,13 +163,6 @@ Toggles:Checkbox({
     text = "Use Mind Blast",
     var = "use_mind_blast",
     tooltip = "Use Mind Blast",
-    default = true
-})
-
-Toggles:Checkbox({
-    text = "Use Hyperspeed Accelerators",
-    var = "use_gloves",
-    tooltip = "Use Engineering Gloves (Hyperspeed Accelerators)",
     default = true
 })
 

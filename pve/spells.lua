@@ -60,7 +60,7 @@ pve_saronite_bomb:Update(function(item)
 end)
 
 pve_inventory_slot_10:Update(function(item)
-    if not rotation.settings.use_gloves then
+    if not rotation.settings.use_cds then
         return
     end
     if not target or not target.exists then
@@ -70,6 +70,9 @@ pve_inventory_slot_10:Update(function(item)
         return
     end
     if player.channel == "Mind Flay" then
+        return
+    end
+    if not (player.buffStacks("Shadow Weaving") == 5) then
         return
     end
 
@@ -83,6 +86,9 @@ pve_inventory_slot_10:Update(function(item)
 end)
 
 pve_inventory_slot_13:Update(function(item)
+    if not rotation.settings.use_cds then
+        return
+    end
     if not target or not target.exists then
         return
     end
@@ -90,6 +96,9 @@ pve_inventory_slot_13:Update(function(item)
         return
     end
     if player.channel == "Mind Flay" then
+        return
+    end
+    if not (player.buffStacks("Shadow Weaving") == 5) then
         return
     end
 
@@ -103,6 +112,9 @@ pve_inventory_slot_13:Update(function(item)
 end)
 
 pve_inventory_slot_14:Update(function(item)
+    if not rotation.settings.use_cds then
+        return
+    end
     if not target or not target.exists then
         return
     end
@@ -110,6 +122,9 @@ pve_inventory_slot_14:Update(function(item)
         return
     end
     if player.channel == "Mind Flay" then
+        return
+    end
+    if not (player.buffStacks("Shadow Weaving") == 5) then
         return
     end
 
@@ -121,21 +136,6 @@ pve_inventory_slot_14:Update(function(item)
         end
     end
 end)
-
-local function SettingsCheck(settingsVar, castId)
-    for k, v in pairs(settingsVar) do
-        if k == castId and v == true then
-            return true
-        end
-        if type(v) == "table" then
-            for _, id in ipairs(v) do
-                if castId == id then
-                    return true
-                end
-            end
-        end
-    end
-end
 
 awful.Draw(function(draw)
     if not rotation.settings.use_draw_ttd then
@@ -221,6 +221,42 @@ pve_vampiric_embrace:Callback(function(spell)
     end
 end)
 
+pve_shadow_word_pain:Callback("aoe", function(spell)
+    if not rotation.settings.useAoe then
+        return
+    end
+    if not rotation.settings.aoeRotation["Shadow Word: Pain"] then
+        return
+    end
+
+    awful.enemies.within(40).filter(filter).loop(function(enemy)
+        if not enemy or not enemy.exists then
+            return
+        end
+        -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
+        -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
+        if enemy.buff("Shroud of the Occult") then
+            return
+        end
+        -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
+        if enemy.name == "Mirror Image" then
+            return
+        end
+        if target.ttd < rotation.settings.ttd_timer then
+            return
+        end
+        if not (player.buffStacks("Shadow Weaving") == 5) then
+            return
+        end
+        if not enemy.debuff("Shadow Word: Pain", player) then
+            if spell:Cast(enemy) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
+        end
+    end)
+end)
+
 pve_vampiric_touch:Callback("aoe", function(spell)
     if not rotation.settings.useAoe then
         return
@@ -231,7 +267,7 @@ pve_vampiric_touch:Callback("aoe", function(spell)
     if player.moving then
         return
     end
-    if not SettingsCheck(rotation.settings.aoeRotation, "Vampiric Touch") then
+    if not rotation.settings.aoeRotation["Vampiric Touch"] then
         return
     end
 
@@ -248,41 +284,10 @@ pve_vampiric_touch:Callback("aoe", function(spell)
         if enemy.name == "Mirror Image" then
             return
         end
-        if enemy.debuffRemains("Vampiric Touch", player) < 1 and target.ttd >= rotation.settings.ttd_timer then
-            if spell:Cast(enemy) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
-        end
-    end)
-end)
-
-pve_shadow_word_pain:Callback("aoe", function(spell)
-    if not rotation.settings.useAoe then
-        return
-    end
-
-    if not SettingsCheck(rotation.settings.aoeRotation, "Shadow Word: Pain") then
-        return
-    end
-
-    awful.enemies.within(40).filter(filter).loop(function(enemy)
-        if not enemy or not enemy.exists then
+        if target.ttd < rotation.settings.ttd_timer then
             return
         end
-        -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
-        -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
-        if enemy.buff("Shroud of the Occult") then
-            return
-        end
-        -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
-        if enemy.name == "Mirror Image" then
-            return
-        end
-        if not (player.buffStacks("Shadow Weaving") == 5) then
-            return
-        end
-        if not enemy.debuff("Shadow Word: Pain", player) and target.ttd >= rotation.settings.ttd_timer then
+        if enemy.debuffRemains("Vampiric Touch", player) < 1 then
             if spell:Cast(enemy) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -295,16 +300,24 @@ pve_mind_sear:Callback("aoe", function(spell)
     if not rotation.settings.useAoe then
         return
     end
+    if not target or not target.exists then
+        return
+    end
     if player.moving then
         return
     end
-    if not SettingsCheck(rotation.settings.aoeRotation, "Mind Sear") then
+    if not rotation.settings.aoeRotation["Mind Sear"] then
         return
     end
-    local hasVT, count = awful.enemies.around(target, 10,
-        function(obj) return obj.combat and obj.enemy and not obj.dead and obj.debuff("Vampiric Touch", player) end)
-    if target and target.exists then
-        if count >= rotation.settings.mind_sear and hasVT then
+    local count = awful.enemies.around(target, 15, function(obj) return obj.combat and obj.enemy and not obj.dead end)
+    if count >= 8 then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
+        end
+    else
+        local vtCount = awful.enemies.around(target, 15, function(obj) return obj.combat and obj.enemy and not obj.dead and obj.debuff("Vampiric Touch", player) end)
+        if vtCount >= 4 then
             if spell:Cast(target) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -333,10 +346,13 @@ pve_vampiric_touch:Callback("opener", function(spell)
     if target.name == "Mirror Image" then
         return
     end
+    if target.ttd < rotation.settings.ttd_timer then
+        return
+    end
     if not (player.buffStacks("Shadow Weaving") < 2) then
         return
     end
-    if target.debuffRemains("Vampiric Touch", player) < 1 and target.ttd >= rotation.settings.ttd_timer then
+    if target.debuffRemains("Vampiric Touch", player) < 1 then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -356,10 +372,13 @@ pve_devouring_plague:Callback("opener", function(spell)
     if target.buff("Shroud of the Occult") then
         return
     end
+    if target.ttd < rotation.settings.ttd_timer then
+        return
+    end
     if not (player.buffStacks("Shadow Weaving") <= 2) then
         return
     end
-    if not target.debuff("Devouring Plague", player) and target.ttd >= rotation.settings.ttd_timer then
+    if not target.debuff("Devouring Plague", player) then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -441,10 +460,13 @@ pve_shadow_word_pain:Callback("opener", function(spell)
     if target.name == "Mirror Image" then
         return
     end
+    if target.ttd < rotation.settings.ttd_timer then
+        return
+    end
     if not (player.buffStacks("Shadow Weaving") == 5) then
         return
     end
-    if not target.debuff("Shadow Word: Pain", player) and target.ttd >= rotation.settings.ttd_timer then
+    if not target.debuff("Shadow Word: Pain", player) then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -472,10 +494,13 @@ pve_vampiric_touch:Callback(function(spell)
     if target.name == "Mirror Image" then
         return
     end
+    if target.ttd < rotation.settings.ttd_timer then
+        return
+    end
     if not (player.buffStacks("Shadow Weaving") == 5) then
         return
     end
-    if target.debuffRemains("Vampiric Touch", player) < 1 and target.ttd >= rotation.settings.ttd_timer then
+    if target.debuffRemains("Vampiric Touch", player) < 1 then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -492,10 +517,13 @@ pve_devouring_plague:Callback(function(spell)
     if target.buff("Shroud of the Occult") then
         return
     end
+    if target.ttd < rotation.settings.ttd_timer then
+        return
+    end
     if not (player.buffStacks("Shadow Weaving") == 5) then
         return
     end
-    if not target.debuff("Devouring Plague", player) and target.ttd >= rotation.settings.ttd_timer then
+    if not target.debuff("Devouring Plague", player) then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -589,10 +617,13 @@ pve_shadow_word_pain:Callback(function(spell)
     if target.name == "Mirror Image" then
         return
     end
+    if target.ttd < rotation.settings.ttd_timer then
+        return
+    end
     if not (player.buffStacks("Shadow Weaving") == 5) then
         return
     end
-    if not target.debuff("Shadow Word: Pain", player) and target.ttd >= rotation.settings.ttd_timer then
+    if not target.debuff("Shadow Word: Pain", player) then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
