@@ -2,6 +2,10 @@ local Unlocker, awful, rotation = ...
 local shadow = rotation.priest.shadow
 local player = awful.player
 
+if not (rotation.settings.mode == "PvP") then
+    return
+end
+
 function rotation.apl_pvp()
     if player.mounted then
         return

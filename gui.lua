@@ -153,16 +153,16 @@ Toggles:Checkbox({
 })
 
 Toggles:Checkbox({
-    text = "Use Saronite Bomb",
-    var = "useSaroniteBomb",
-    tooltip = "Use Saronite Bomb",
-    default = true
+    text = "Show TTD Timer",
+    var = "use_draw_ttd",
+    tooltip = "Shows the Time To Die Timer on mobs",
+    default = false
 })
 
 Toggles:Checkbox({
     text = "Use Mind Blast",
     var = "use_mind_blast",
-    tooltip = "Use Mind Blast",
+    tooltip = "Use Mind Blast in the Rotation",
     default = true
 })
 
@@ -174,10 +174,17 @@ Toggles:Checkbox({
 })
 
 Toggles:Checkbox({
-    text = "Show TTD Timer",
-    var = "use_draw_ttd",
-    tooltip = "Shows the Time To Die Timer on mobs",
-    default = false
+    text = "Use Saronite Bomb (Raid Boss)",
+    var = "useSaroniteBomb",
+    tooltip = "Use Saronite Bomb on a Raid Boss",
+    default = true
+})
+
+Toggles:Checkbox({
+    text = "Use Potion of Speed (Raid Boss)",
+    var = "use_potion_speed",
+    tooltip = "Use Potion of Speed while fighting against a Raid Boss, you still need too pre pot!",
+    default = true
 })
 
 local Macros = gui:Tab(awful.textureEscape(47585, 16) .. " Macros")

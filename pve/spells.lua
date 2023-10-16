@@ -4,6 +4,10 @@ local Spell = awful.Spell
 local player, target = awful.player, awful.target
 local NewItem = awful.NewItem
 
+if not (rotation.settings.mode == "PvE") then
+    return
+end
+
 local getItemId = function(slot)
     itemId = GetInventoryItemID("player", slot)
     return itemId
@@ -35,6 +39,7 @@ awful.Populate({
     pve_inventory_slot_13 = NewItem(getItemId(13)),
     pve_inventory_slot_14 = NewItem(getItemId(14)),
     pve_saronite_bomb     = NewItem(41119),
+    pve_potion_of_speed   = NewItem(40211),
 }, shadow, getfenv(1))
 
 local function filter(obj)
@@ -54,6 +59,24 @@ pve_saronite_bomb:Update(function(item)
 
     if item:Usable() and target.level == -1 then
         if item:UseAoE(target) then
+            awful.alert(item.name, item.id)
+        end
+    end
+end)
+
+pve_potion_of_speed:Update(function(item)
+    if not rotation.settings.use_potion_speed then
+        return
+    end
+    if not target or not target.exists then
+        return
+    end
+    if not item:Usable() then
+        return
+    end
+
+    if item:Usable() and target.level == -1 then
+        if item:Use() then
             awful.alert(item.name, item.id)
         end
     end
@@ -331,7 +354,8 @@ pve_mind_sear:Callback("aoe_vt", function(spell)
     if not rotation.settings.aoeRotation["Mind Sear"] then
         return
     end
-    local count = awful.enemies.around(target, 12, function(obj) return obj.combat and obj.enemy and not obj.dead and obj.debuff("Vampiric Touch", player) end)
+    local count = awful.enemies.around(target, 12,
+        function(obj) return obj.combat and obj.enemy and not obj.dead and obj.debuff("Vampiric Touch", player) end)
     if count >= 3 then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)

@@ -3,6 +3,10 @@ local shadow = rotation.priest.shadow
 local player, target = awful.player, awful.target
 awful.ttd_enabled = true
 
+if not (rotation.settings.mode == "PvE") then
+    return
+end
+
 local function auto_target()
     if not rotation.settings.use_auto_target then
         return
@@ -56,6 +60,7 @@ function rotation.apl_pve()
     shadow.pve_inventory_slot_10()
     shadow.pve_inventory_slot_13()
     shadow.pve_inventory_slot_14()
+    shadow.pve_potion_of_speed()
 
     shadow.pve_shadow_word_pain("opener")
 
