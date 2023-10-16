@@ -28,7 +28,7 @@ function rotation.apl_pve()
 
     auto_target()
 
-    if not player.combat then
+    if not target.combat or not player.combat then
         return
     end
 
