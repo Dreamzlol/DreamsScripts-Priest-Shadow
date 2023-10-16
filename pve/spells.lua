@@ -310,14 +310,14 @@ pve_mind_sear:Callback("aoe", function(spell)
         return
     end
     local count = awful.enemies.around(target, 15, function(obj) return obj.combat and obj.enemy and not obj.dead end)
-    if count >= 8 then
+    if count >= 7 then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
         end
     else
         local vtCount = awful.enemies.around(target, 15, function(obj) return obj.combat and obj.enemy and not obj.dead and obj.debuff("Vampiric Touch", player) end)
-        if vtCount >= 4 then
+        if vtCount >= 3 then
             if spell:Cast(target) then
                 awful.alert(spell.name, spell.id)
                 return
