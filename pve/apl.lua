@@ -49,19 +49,18 @@ function rotation.apl_pve()
     shadow.pve_shadow_word_pain("aoe")
     shadow.pve_mind_sear("aoe_vt")
 
+    shadow.pve_berserking()
+    shadow.pve_inventory_slot_10()
+    shadow.pve_inventory_slot_13()
+    shadow.pve_inventory_slot_14()
+    shadow.pve_potion_of_speed()
+    
     -- Opener Rotation
     shadow.pve_vampiric_touch("opener")
     shadow.pve_devouring_plague("opener")
     shadow.pve_mind_blast("opener")
     shadow.pve_shadowfiend("opener")
     shadow.pve_mind_flay("opener")
-
-    shadow.pve_berserking()
-    shadow.pve_inventory_slot_10()
-    shadow.pve_inventory_slot_13()
-    shadow.pve_inventory_slot_14()
-    shadow.pve_potion_of_speed()
-
     shadow.pve_shadow_word_pain("opener")
 
     -- Main Rotation

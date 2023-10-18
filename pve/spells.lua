@@ -29,7 +29,7 @@ awful.Populate({
     pve_mind_flay         = Spell(48156, { damage = "magic" }),
     pve_vampiric_touch    = Spell(48160, { damage = "magic", ignoreFacing = true }),
     pve_devouring_plague  = Spell(48300, { damage = "magic", ignoreFacing = true }),
-    pve_shadow_word_pain  = Spell(2767, { damage = "magic", ignoreFacing = true }),
+    pve_shadow_word_pain  = Spell(48125, { damage = "magic", ignoreFacing = true }),
     pve_mind_sear         = Spell(53023, { damage = "magic", ignoreFacing = true }),
     pve_shadowfiend       = Spell(34433, { damage = "magic", ignoreFacing = true }),
     pve_shadow_word_death = Spell(48158, { damage = "magic", ignoreFacing = true }),
@@ -107,9 +107,6 @@ pve_inventory_slot_10:Update(function(item)
     if player.casting or player.channel then
         return
     end
-    if not (player.buffStacks("Shadow Weaving") == 5) then
-        return
-    end
 
     if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
         if item:Use() then
@@ -134,9 +131,6 @@ pve_inventory_slot_13:Update(function(item)
     if player.casting or player.channel then
         return
     end
-    if not (player.buffStacks("Shadow Weaving") == 5) then
-        return
-    end
 
     if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
         if item:Use() then
@@ -159,9 +153,6 @@ pve_inventory_slot_14:Update(function(item)
         return
     end
     if player.casting or player.channel then
-        return
-    end
-    if not (player.buffStacks("Shadow Weaving") == 5) then
         return
     end
 
@@ -239,6 +230,7 @@ pve_inner_focus:Callback(function(spell)
     end
     if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
         if spell:Cast() then
+            pve_mind_flay:Cast()
             awful.alert(spell.name, spell.id)
             return
         end
@@ -266,12 +258,9 @@ pve_shadow_word_pain:Callback("aoe", function(spell)
         if not enemy or not enemy.exists then
             return
         end
-        -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
-        -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
         if enemy.buff("Shroud of the Occult") then
             return
         end
-        -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
         if enemy.name == "Mirror Image" then
             return
         end
@@ -308,19 +297,16 @@ pve_vampiric_touch:Callback("aoe", function(spell)
         if not enemy or not enemy.exists then
             return
         end
-        -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
-        -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
         if enemy.buff("Shroud of the Occult") then
             return
         end
-        -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
         if enemy.name == "Mirror Image" then
             return
         end
         if enemy.ttd < rotation.settings.ttd_timer then
             return
         end
-        if enemy.debuffRemains("Vampiric Touch", player) < 1 then
+        if enemy.debuffRemains(spell.id, player) <= spell.castTime then
             if spell:Cast(enemy) then
                 awful.alert(spell.name, spell.id)
                 return
@@ -385,12 +371,9 @@ pve_vampiric_touch:Callback("opener", function(spell)
     if player.moving then
         return
     end
-    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
-    -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
     end
-    -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
     if target.name == "Mirror Image" then
         return
     end
@@ -400,7 +383,7 @@ pve_vampiric_touch:Callback("opener", function(spell)
     if player.buff("Shadow Weaving") then
         return
     end
-    if target.debuffRemains("Vampiric Touch", player) < 1 then
+    if target.debuffRemains(spell.id, player) <= spell.castTime then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -415,8 +398,6 @@ pve_devouring_plague:Callback("opener", function(spell)
     if not target.debuff("Vampiric Touch", player) then
         return
     end
-    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
-    -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
     end
@@ -426,7 +407,7 @@ pve_devouring_plague:Callback("opener", function(spell)
     if not (player.buffStacks("Shadow Weaving") == 1) then
         return
     end
-    if not target.debuff("Devouring Plague", player) then
+    if not target.debuff(spell.id, player) then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -447,7 +428,7 @@ pve_mind_blast:Callback("opener", function(spell)
     if not (player.buffStacks("Shadow Weaving") == 2) then
         return
     end
-    if target.debuff("Vampiric Touch", player) then
+    if target.debuff(spell.id, player) then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -499,12 +480,9 @@ pve_shadow_word_pain:Callback("opener", function(spell)
     if not target or not target.exists then
         return
     end
-    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
-    -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
     end
-    -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
     if target.name == "Mirror Image" then
         return
     end
@@ -514,7 +492,7 @@ pve_shadow_word_pain:Callback("opener", function(spell)
     if not (player.buffStacks("Shadow Weaving") == 5) then
         return
     end
-    if not target.debuff("Shadow Word: Pain", player) then
+    if not target.debuff(spell.id, player) then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -533,12 +511,9 @@ pve_vampiric_touch:Callback(function(spell)
     if player.moving then
         return
     end
-    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
-    -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
     end
-    -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
     if target.name == "Mirror Image" then
         return
     end
@@ -548,7 +523,7 @@ pve_vampiric_touch:Callback(function(spell)
     if not (player.buffStacks("Shadow Weaving") == 5) then
         return
     end
-    if target.debuffRemains("Vampiric Touch", player) < 1 then
+    if target.debuffRemains(spell.id, player) <= spell.castTime then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -560,8 +535,6 @@ pve_devouring_plague:Callback(function(spell)
     if not target or not target.exists then
         return
     end
-    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
-    -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
     end
@@ -571,7 +544,7 @@ pve_devouring_plague:Callback(function(spell)
     if not (player.buffStacks("Shadow Weaving") == 5) then
         return
     end
-    if not target.debuff("Devouring Plague", player) then
+    if target.debuffRemains(spell.id, player) <= 2.9 then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -656,12 +629,9 @@ pve_shadow_word_pain:Callback(function(spell)
     if not target or not target.exists then
         return
     end
-    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
-    -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
     end
-    -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
     if target.name == "Mirror Image" then
         return
     end
@@ -671,7 +641,7 @@ pve_shadow_word_pain:Callback(function(spell)
     if not (player.buffStacks("Shadow Weaving") == 5) then
         return
     end
-    if not target.debuff("Shadow Word: Pain", player) then
+    if not target.debuff(spell.id, player) then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -683,16 +653,12 @@ pve_shadow_word_death:Callback(function(spell)
     if not target or not target.exists then
         return
     end
-    -- (ICC) Shroud of the Occult: Envelops the caster in a powerful barrier that deflects all harmful magic,
-    -- prevents cast interruption, and absorbs up to 50000 damage before breaking.
     if target.buff("Shroud of the Occult") then
         return
     end
-    -- (Heroic+) Mirror Image: This NPC can be found in The Oculus , The Nexus , and The Violet Hold.
     if target.name == "Mirror Image" then
         return
     end
-    -- (Ulduar) Profound Darkness: Inflicts 750 damage to all enemies, and increases Shadow damage taken by 10% per application.
     if player.debuff("Profound Darkness") then
         return
     end
