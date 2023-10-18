@@ -428,7 +428,7 @@ pve_mind_blast:Callback("opener", function(spell)
     if player.moving then
         return
     end
-    if not (player.buffStacks("Shadow Weaving") == 2) then
+    if not (player.buffStacks("Shadow Weaving") == 1) then
         return
     end
     if target.debuff("Vampiric Touch", player) then
