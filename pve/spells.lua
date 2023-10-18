@@ -59,6 +59,9 @@ pve_saronite_bomb:Update(function(item)
     if not item.usable then
         return
     end
+    if player.casting or player.channel then
+        return
+    end
 
     if target.level == -1 then
         if item:UseAoE(target) then
@@ -77,15 +80,19 @@ pve_potion_of_speed:Update(function(item)
     if not item.usable then
         return
     end
+    if player.casting or player.channel then
+        return
+    end
 
     if target.level == -1 then
         if item:Use() then
-            return awful.alert(item.name, item.id)
+            return awful.alert(item.name, 53908)
         end
     end
 end)
 
 pve_inventory_slot_10:Update(function(item)
+    print(player.channel)
     if not rotation.settings.use_cds then
         return
     end
@@ -98,7 +105,7 @@ pve_inventory_slot_10:Update(function(item)
     if player.moving then
         return
     end
-    if player.channel == "Mind Flay" then
+    if player.casting or player.channel then
         return
     end
     if not (player.buffStacks("Shadow Weaving") == 5) then
@@ -107,7 +114,7 @@ pve_inventory_slot_10:Update(function(item)
 
     if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
         if item:Use() then
-            return awful.alert(item.name, item.id)
+            return awful.alert("Hyperspeed Acceleration", 54758)
         end
     end
 end)
@@ -125,7 +132,7 @@ pve_inventory_slot_13:Update(function(item)
     if player.moving then
         return
     end
-    if player.channel == "Mind Flay" then
+    if player.casting or player.channel then
         return
     end
     if not (player.buffStacks("Shadow Weaving") == 5) then
@@ -152,7 +159,7 @@ pve_inventory_slot_14:Update(function(item)
     if player.moving then
         return
     end
-    if player.channel == "Mind Flay" then
+    if player.casting or player.channel then
         return
     end
     if not (player.buffStacks("Shadow Weaving") == 5) then
