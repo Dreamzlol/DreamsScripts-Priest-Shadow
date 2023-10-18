@@ -53,13 +53,16 @@ pve_saronite_bomb:Update(function(item)
     if not target or not target.exists then
         return
     end
-    if not item:Usable() then
+    if target.dist > item.range then
+        return
+    end
+    if not item.usable then
         return
     end
 
-    if item:Usable() and target.level == -1 then
+    if target.level == -1 then
         if item:UseAoE(target) then
-            awful.alert(item.name, item.id)
+            return awful.alert(item.name, item.id)
         end
     end
 end)
@@ -71,13 +74,13 @@ pve_potion_of_speed:Update(function(item)
     if not target or not target.exists then
         return
     end
-    if not item:Usable() then
+    if not item.usable then
         return
     end
 
-    if item:Usable() and target.level == -1 then
+    if target.level == -1 then
         if item:Use() then
-            awful.alert(item.name, item.id)
+            return awful.alert(item.name, item.id)
         end
     end
 end)
@@ -89,6 +92,9 @@ pve_inventory_slot_10:Update(function(item)
     if not target or not target.exists then
         return
     end
+    if not item.usable then
+        return
+    end
     if player.moving then
         return
     end
@@ -99,11 +105,9 @@ pve_inventory_slot_10:Update(function(item)
         return
     end
 
-    local _, duration, enable = GetInventoryItemCooldown("player", 10)
-    if enable == 1 and duration == 0 then
-        if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
-            item:Use()
-            return
+    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
+        if item:Use() then
+            return awful.alert(item.name, item.id)
         end
     end
 end)
@@ -115,6 +119,9 @@ pve_inventory_slot_13:Update(function(item)
     if not target or not target.exists then
         return
     end
+    if not item.usable then
+        return
+    end
     if player.moving then
         return
     end
@@ -125,11 +132,9 @@ pve_inventory_slot_13:Update(function(item)
         return
     end
 
-    local _, duration, enable = GetInventoryItemCooldown("player", 13)
-    if enable == 1 and duration == 0 then
-        if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
-            item:Use()
-            return
+    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
+        if item:Use() then
+            return awful.alert(item.name, item.id)
         end
     end
 end)
@@ -141,6 +146,9 @@ pve_inventory_slot_14:Update(function(item)
     if not target or not target.exists then
         return
     end
+    if not item.usable then
+        return
+    end
     if player.moving then
         return
     end
@@ -151,12 +159,8 @@ pve_inventory_slot_14:Update(function(item)
         return
     end
 
-    local _, duration, enable = GetInventoryItemCooldown("player", 14)
-    if enable == 1 and duration == 0 then
-        if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
-            item:Use()
-            return
-        end
+    if target.level == -1 or (target.level == 82 and player.buff("Luck of the Draw")) then
+        return item:Use()
     end
 end)
 
@@ -265,7 +269,7 @@ pve_shadow_word_pain:Callback("aoe", function(spell)
         if enemy.name == "Mirror Image" then
             return
         end
-        if target.ttd < rotation.settings.ttd_timer then
+        if enemy.ttd < rotation.settings.ttd_timer then
             return
         end
         if not (player.buffStacks("Shadow Weaving") == 5) then
@@ -307,7 +311,7 @@ pve_vampiric_touch:Callback("aoe", function(spell)
         if enemy.name == "Mirror Image" then
             return
         end
-        if target.ttd < rotation.settings.ttd_timer then
+        if enemy.ttd < rotation.settings.ttd_timer then
             return
         end
         if enemy.debuffRemains("Vampiric Touch", player) < 1 then
@@ -387,7 +391,7 @@ pve_vampiric_touch:Callback("opener", function(spell)
     if target.ttd < rotation.settings.ttd_timer then
         return
     end
-    if not (player.buffStacks("Shadow Weaving") < 2) then
+    if player.buff("Shadow Weaving") then
         return
     end
     if target.debuffRemains("Vampiric Touch", player) < 1 then
@@ -413,7 +417,7 @@ pve_devouring_plague:Callback("opener", function(spell)
     if target.ttd < rotation.settings.ttd_timer then
         return
     end
-    if not (player.buffStacks("Shadow Weaving") <= 2) then
+    if not (player.buffStacks("Shadow Weaving") == 1) then
         return
     end
     if not target.debuff("Devouring Plague", player) then
@@ -434,7 +438,7 @@ pve_mind_blast:Callback("opener", function(spell)
     if player.moving then
         return
     end
-    if not (player.buffStacks("Shadow Weaving") <= 3) then
+    if not (player.buffStacks("Shadow Weaving") == 2) then
         return
     end
     if target.debuff("Vampiric Touch", player) then
@@ -455,7 +459,7 @@ pve_shadowfiend:Callback("opener", function(spell)
     if not target.debuff("Vampiric Touch", player) then
         return
     end
-    if not (player.buffStacks("Shadow Weaving") <= 3) then
+    if not (player.buffStacks("Shadow Weaving") == 3) then
         return
     end
 
@@ -474,7 +478,7 @@ pve_mind_flay:Callback("opener", function(spell)
     if not target or not target.exists then
         return
     end
-    if not (player.buffStacks("Shadow Weaving") < 5) then
+    if not (player.buffStacks("Shadow Weaving") == 3) then
         return
     end
     if target.debuff("Vampiric Touch", player) then
