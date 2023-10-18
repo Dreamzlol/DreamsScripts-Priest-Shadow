@@ -1,14 +1,13 @@
 local Unlocker, awful, rotation = ...
 local shadow = rotation.priest.shadow
-local class = awful.player.class2
 local current_mode = nil
 
-if class ~= "PRIEST" then
+if not awful.player.class2 == "PRIEST" then
     return
 end
 
 awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Shadow Loaded!")
-awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Version: 2.1.1")
+awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Version: 2.1.2")
 
 shadow:Init(function()
     if rotation.settings.mode ~= current_mode then

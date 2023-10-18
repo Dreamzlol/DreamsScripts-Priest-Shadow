@@ -1,7 +1,6 @@
 local Unlocker, awful, rotation = ...
-local class = awful.player.class2
 
-if class ~= "PRIEST" then
+if not awful.player.class2 == "PRIEST" then
     return
 end
 

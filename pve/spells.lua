@@ -4,6 +4,9 @@ local Spell = awful.Spell
 local player, target = awful.player, awful.target
 local NewItem = awful.NewItem
 
+if not awful.player.class2 == "PRIEST" then
+    return
+end
 if not (rotation.settings.mode == "PvE") then
     return
 end
@@ -428,7 +431,7 @@ pve_mind_blast:Callback("opener", function(spell)
     if not (player.buffStacks("Shadow Weaving") == 2) then
         return
     end
-    if target.debuff(spell.id, player) then
+    if target.debuff("Vampiric Touch", player) then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return

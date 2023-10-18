@@ -3,6 +3,9 @@ local shadow = rotation.priest.shadow
 local player, target = awful.player, awful.target
 awful.ttd_enabled = true
 
+if not awful.player.class2 == "PRIEST" then
+    return
+end
 if not (rotation.settings.mode == "PvE") then
     return
 end
@@ -36,12 +39,10 @@ function rotation.apl_pve()
         return
     end
 
-    shadow.pve_shadow_word_death("web wrap") -- Dungeon Logic
-    shadow.pve_mind_flay("web wrap") -- Dungeon Logic
-    shadow.pve_mind_flay("mirror image") -- Dungeon Logic
-
-    -- Items
-    shadow.pve_saronite_bomb()
+    -- Dungeon Logic
+    shadow.pve_shadow_word_death("web wrap")
+    shadow.pve_mind_flay("web wrap")
+    shadow.pve_mind_flay("mirror image")
 
     -- AoE Rotation
     shadow.pve_mind_sear("aoe")
@@ -49,12 +50,14 @@ function rotation.apl_pve()
     shadow.pve_shadow_word_pain("aoe")
     shadow.pve_mind_sear("aoe_vt")
 
+    -- Items
+    shadow.pve_saronite_bomb()
     shadow.pve_berserking()
     shadow.pve_inventory_slot_10()
     shadow.pve_inventory_slot_13()
     shadow.pve_inventory_slot_14()
     shadow.pve_potion_of_speed()
-    
+
     -- Opener Rotation
     shadow.pve_vampiric_touch("opener")
     shadow.pve_devouring_plague("opener")

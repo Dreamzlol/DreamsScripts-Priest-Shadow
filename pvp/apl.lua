@@ -2,6 +2,9 @@ local Unlocker, awful, rotation = ...
 local shadow = rotation.priest.shadow
 local player = awful.player
 
+if not awful.player.class2 == "PRIEST" then
+    return
+end
 if not (rotation.settings.mode == "PvP") then
     return
 end
