@@ -92,7 +92,6 @@ pve_potion_of_speed:Update(function(item)
 end)
 
 pve_inventory_slot_10:Update(function(item)
-    print(player.channel)
     if not rotation.settings.use_cds then
         return
     end
