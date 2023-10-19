@@ -160,7 +160,7 @@ end)
 berserking:Callback(function(spell)
     if not rotation.settings.use_cds then return end
 
-    if player.buffStacks("Shadow Weaving") == 5 and isBoss(target) then
+    if isBoss(target) then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
             return
@@ -170,12 +170,17 @@ end)
 
 innerFocus:Callback(function(spell)
     if not rotation.settings.use_cds then return end
-    if mindBlast.cd > 0 then return end
+    if mindBlast.cd < 0 then return end
+    if not target.debuff(vampiricTouch.id, player)
+        and not target.debuff(devouringPlague.id, player)
+        and not target.debuff(shadowWordPain.id, player) then
+        return
+    end
     if player.moving then return end
 
     if player.buffStacks("Shadow Weaving") == 5 and isBoss(target) then
         if spell:Cast() then
-            return mindFlay:Cast() and awful.alert(spell.name, spell.id)
+            return awful.alert(spell.name, spell.id)
         end
     end
 end)
