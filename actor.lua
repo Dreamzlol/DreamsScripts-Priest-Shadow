@@ -7,7 +7,7 @@ if not awful.player.class2 == "PRIEST" then
 end
 
 awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Shadow Loaded!")
-awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Version: 2.1.2")
+awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Version: 2.1.3")
 
 shadow:Init(function()
     if rotation.settings.mode ~= current_mode then
@@ -17,9 +17,9 @@ shadow:Init(function()
     end
 
     if (rotation.settings.mode == "PvE") then
-        rotation.apl_pve()
+        rotation.pve()
     end
     if (rotation.settings.mode == "PvP") then
-        rotation.apl_pvp()
+        rotation.pvp()
     end
 end, 0.05)

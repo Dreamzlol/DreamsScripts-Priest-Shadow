@@ -1,5 +1,5 @@
 local Unlocker, awful, rotation = ...
-local shadow = rotation.priest.shadow
+local pve = rotation.priest.shadow
 local player, target = awful.player, awful.target
 awful.ttd_enabled = true
 
@@ -11,9 +11,7 @@ if not (rotation.settings.mode == "PvE") then
 end
 
 local function auto_target()
-    if not rotation.settings.use_auto_target then
-        return
-    end
+    if not rotation.settings.use_auto_target then return end
     local enemy = awful.enemies.within(40).lowest
     if not enemy or not enemy.exists then
         return
@@ -23,15 +21,15 @@ local function auto_target()
     end
 end
 
-function rotation.apl_pve()
+function rotation.pve()
     if player.mounted or player.buff("Drink") then
         return
     end
 
     -- Buffs
-    shadow.pve_shadowform()
-    shadow.pve_inner_fire()
-    shadow.pve_vampiric_embrace()
+    pve.shadowform()
+    pve.innerFire()
+    pve.vampiricEmbrace()
 
     auto_target()
 
@@ -40,39 +38,39 @@ function rotation.apl_pve()
     end
 
     -- Dungeon Logic
-    shadow.pve_shadow_word_death("web wrap")
-    shadow.pve_mind_flay("web wrap")
-    shadow.pve_mind_flay("mirror image")
+    pve.shadowWordDeath("web wrap")
+    pve.mindFlay("web wrap")
+    pve.mindFlay("mirror image")
 
     -- AoE Rotation
-    shadow.pve_mind_sear("aoe")
-    shadow.pve_vampiric_touch("aoe")
-    shadow.pve_shadow_word_pain("aoe")
-    shadow.pve_mind_sear("aoe_vt")
+    pve.mindSear("aoe")
+    pve.vampiricTouch("aoe")
+    pve.shadowWordPain("aoe")
+    pve.mindSear("aoe_vt")
 
     -- Items
-    shadow.pve_saronite_bomb()
-    shadow.pve_berserking()
-    shadow.pve_inventory_slot_10()
-    shadow.pve_inventory_slot_13()
-    shadow.pve_inventory_slot_14()
-    shadow.pve_potion_of_speed()
+    pve.saroniteBomb()
+    pve.berserking()
+    pve.inventorySlot10()
+    pve.inventorySlot13()
+    pve.inventorySlot14()
+    pve.potionOfSpeed()
 
     -- Opener Rotation
-    shadow.pve_vampiric_touch("opener")
-    shadow.pve_devouring_plague("opener")
-    shadow.pve_mind_blast("opener")
-    shadow.pve_shadowfiend("opener")
-    shadow.pve_mind_flay("opener")
-    shadow.pve_shadow_word_pain("opener")
+    pve.vampiricTouch("opener")
+    pve.devouringPlague("opener")
+    pve.mindBlast("opener")
+    pve.shadowfiend("opener")
+    pve.mindFlay("opener")
+    pve.shadowWordPain("opener")
 
     -- Main Rotation
-    shadow.pve_shadow_word_death()
-    shadow.pve_vampiric_touch()
-    shadow.pve_devouring_plague()
-    shadow.pve_shadowfiend()
-    shadow.pve_mind_blast()
-    shadow.pve_inner_focus()
-    shadow.pve_mind_flay()
-    shadow.pve_shadow_word_pain()
+    pve.shadowWordDeath()
+    pve.vampiricTouch()
+    pve.devouringPlague()
+    pve.shadowfiend()
+    pve.mindBlast()
+    pve.innerFocus()
+    pve.mindFlay()
+    pve.shadowWordPain()
 end

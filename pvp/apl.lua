@@ -9,7 +9,7 @@ if not (rotation.settings.mode == "PvP") then
     return
 end
 
-function rotation.apl_pvp()
+function rotation.pvp()
     if player.mounted then
         return
     end

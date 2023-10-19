@@ -1,8 +1,8 @@
 local Unlocker, awful, rotation = ...
-local shadow = rotation.priest.shadow
-local Spell = awful.Spell
+local pve = rotation.priest.shadow
+local spell = awful.Spell
 local player, target = awful.player, awful.target
-local NewItem = awful.NewItem
+local item = awful.Item
 
 if not awful.player.class2 == "PRIEST" then
     return
@@ -11,45 +11,42 @@ if not (rotation.settings.mode == "PvE") then
     return
 end
 
-local getItemId = function(slot)
-    itemId = GetInventoryItemID("player", slot)
-    return itemId
+local getItemID = function(slot)
+    itemID = GetInventoryItemID("player", slot)
+    return itemID
 end
 
 awful.Populate({
     -- Racials
-    pve_berserking        = Spell(26297, { beneficial = true }),
-
-    -- Buffs
-    pve_shadowform        = Spell(15473, { beneficial = true }),
-    pve_inner_fire        = Spell(48168, { beneficial = true }),
-    pve_vampiric_embrace  = Spell(15286, { beneficial = true }),
-    pve_dispersion        = Spell(47585),
-    pve_inner_focus       = Spell(14751, { beneficial = true }),
-
-    -- Damage
-    pve_mind_blast        = Spell(48127, { damage = "magic" }),
-    pve_mind_flay         = Spell(48156, { damage = "magic" }),
-    pve_vampiric_touch    = Spell(48160, { damage = "magic", ignoreFacing = true }),
-    pve_devouring_plague  = Spell(48300, { damage = "magic", ignoreFacing = true }),
-    pve_shadow_word_pain  = Spell(48125, { damage = "magic", ignoreFacing = true }),
-    pve_mind_sear         = Spell(53023, { damage = "magic", ignoreFacing = true }),
-    pve_shadowfiend       = Spell(34433, { damage = "magic", ignoreFacing = true }),
-    pve_shadow_word_death = Spell(48158, { damage = "magic", ignoreFacing = true }),
-
+    berserking      = spell(26297, { beneficial = true }),
     -- Items
-    pve_inventory_slot_10 = NewItem(getItemId(10)),
-    pve_inventory_slot_13 = NewItem(getItemId(13)),
-    pve_inventory_slot_14 = NewItem(getItemId(14)),
-    pve_saronite_bomb     = NewItem(41119),
-    pve_potion_of_speed   = NewItem(40211),
-}, shadow, getfenv(1))
+    inventorySlot10 = item(getItemID(10)),
+    inventorySlot13 = item(getItemID(13)),
+    inventorySlot14 = item(getItemID(14)),
+    saroniteBomb    = item(41119),
+    potionOfSpeed   = item(40211),
+    -- Buffs
+    shadowform      = spell(15473, { beneficial = true }),
+    innerFire       = spell(48168, { beneficial = true }),
+    vampiricEmbrace = spell(15286, { beneficial = true }),
+    dispersion      = spell(47585, { beneficial = true }),
+    innerFocus      = spell(14751, { beneficial = true }),
+    -- Damage
+    mindBlast       = spell(48127, { damage = "magic" }),
+    mindFlay        = spell(48156, { damage = "magic" }),
+    vampiricTouch   = spell(48160, { damage = "magic", ignoreFacing = true }),
+    devouringPlague = spell(48300, { damage = "magic", ignoreFacing = true }),
+    shadowWordPain  = spell(48125, { damage = "magic", ignoreFacing = true }),
+    mindSear        = spell(53023, { damage = "magic", ignoreFacing = true }),
+    shadowfiend     = spell(34433, { damage = "magic", ignoreFacing = true }),
+    shadowWordDeath = spell(48158, { damage = "magic", ignoreFacing = true }),
+}, pve, getfenv(1))
 
 local function filter(obj)
     return obj.combat and obj.los and obj.distance < 40 and obj.enemy and not obj.dead
 end
 
-pve_saronite_bomb:Update(function(item)
+saroniteBomb:Update(function(item)
     if not rotation.settings.useSaroniteBomb then
         return
     end
@@ -73,7 +70,7 @@ pve_saronite_bomb:Update(function(item)
     end
 end)
 
-pve_potion_of_speed:Update(function(item)
+potionOfSpeed:Update(function(item)
     if not rotation.settings.use_potion_speed then
         return
     end
@@ -94,7 +91,7 @@ pve_potion_of_speed:Update(function(item)
     end
 end)
 
-pve_inventory_slot_10:Update(function(item)
+inventorySlot10:Update(function(item)
     if not rotation.settings.use_cds then
         return
     end
@@ -118,7 +115,7 @@ pve_inventory_slot_10:Update(function(item)
     end
 end)
 
-pve_inventory_slot_13:Update(function(item)
+inventorySlot13:Update(function(item)
     if not rotation.settings.use_cds then
         return
     end
@@ -142,7 +139,7 @@ pve_inventory_slot_13:Update(function(item)
     end
 end)
 
-pve_inventory_slot_14:Update(function(item)
+inventorySlot14:Update(function(item)
     if not rotation.settings.use_cds then
         return
     end
@@ -188,7 +185,7 @@ awful.Draw(function(draw)
     end)
 end)
 
-pve_shadowform:Callback(function(spell)
+shadowform:Callback(function(spell)
     if not player.buff("Shadowform") then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
@@ -197,7 +194,7 @@ pve_shadowform:Callback(function(spell)
     end
 end)
 
-pve_inner_fire:Callback(function(spell)
+innerFire:Callback(function(spell)
     if not player.buff("Inner Fire") then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
@@ -206,7 +203,7 @@ pve_inner_fire:Callback(function(spell)
     end
 end)
 
-pve_berserking:Callback(function(spell)
+berserking:Callback(function(spell)
     if not rotation.settings.use_cds then
         return
     end
@@ -221,7 +218,7 @@ pve_berserking:Callback(function(spell)
     end
 end)
 
-pve_inner_focus:Callback(function(spell)
+innerFocus:Callback(function(spell)
     if not rotation.settings.use_cds then
         return
     end
@@ -240,7 +237,7 @@ pve_inner_focus:Callback(function(spell)
     end
 end)
 
-pve_vampiric_embrace:Callback(function(spell)
+vampiricEmbrace:Callback(function(spell)
     if not player.buff("Vampiric Embrace") then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
@@ -249,7 +246,7 @@ pve_vampiric_embrace:Callback(function(spell)
     end
 end)
 
-pve_shadow_word_pain:Callback("aoe", function(spell)
+shadowWordPain:Callback("aoe", function(spell)
     if not rotation.settings.useAoe then
         return
     end
@@ -282,7 +279,7 @@ pve_shadow_word_pain:Callback("aoe", function(spell)
     end)
 end)
 
-pve_vampiric_touch:Callback("aoe", function(spell)
+vampiricTouch:Callback("aoe", function(spell)
     if not rotation.settings.useAoe then
         return
     end
@@ -318,7 +315,7 @@ pve_vampiric_touch:Callback("aoe", function(spell)
     end)
 end)
 
-pve_mind_sear:Callback("aoe", function(spell)
+mindSear:Callback("aoe", function(spell)
     if not rotation.settings.useAoe then
         return
     end
@@ -340,7 +337,7 @@ pve_mind_sear:Callback("aoe", function(spell)
     end
 end)
 
-pve_mind_sear:Callback("aoe_vt", function(spell)
+mindSear:Callback("aoe_vt", function(spell)
     if not rotation.settings.useAoe then
         return
     end
@@ -364,7 +361,7 @@ pve_mind_sear:Callback("aoe_vt", function(spell)
 end)
 
 -- Opener Rotation
-pve_vampiric_touch:Callback("opener", function(spell)
+vampiricTouch:Callback("opener", function(spell)
     if not target or not target.exists then
         return
     end
@@ -394,7 +391,7 @@ pve_vampiric_touch:Callback("opener", function(spell)
     end
 end)
 
-pve_devouring_plague:Callback("opener", function(spell)
+devouringPlague:Callback("opener", function(spell)
     if not target or not target.exists then
         return
     end
@@ -418,7 +415,7 @@ pve_devouring_plague:Callback("opener", function(spell)
     end
 end)
 
-pve_mind_blast:Callback("opener", function(spell)
+mindBlast:Callback("opener", function(spell)
     if not rotation.settings.use_mind_blast then
         return
     end
@@ -439,7 +436,7 @@ pve_mind_blast:Callback("opener", function(spell)
     end
 end)
 
-pve_shadowfiend:Callback("opener", function(spell)
+shadowfiend:Callback("opener", function(spell)
     if not rotation.settings.use_cds then
         return
     end
@@ -461,7 +458,7 @@ pve_shadowfiend:Callback("opener", function(spell)
     end
 end)
 
-pve_mind_flay:Callback("opener", function(spell)
+mindFlay:Callback("opener", function(spell)
     if not target or not target.exists then
         return
     end
@@ -479,7 +476,7 @@ pve_mind_flay:Callback("opener", function(spell)
     end
 end)
 
-pve_shadow_word_pain:Callback("opener", function(spell)
+shadowWordPain:Callback("opener", function(spell)
     if not target or not target.exists then
         return
     end
@@ -504,7 +501,7 @@ pve_shadow_word_pain:Callback("opener", function(spell)
 end)
 
 -- Main Rotation
-pve_vampiric_touch:Callback(function(spell)
+vampiricTouch:Callback(function(spell)
     if not target or not target.exists then
         return
     end
@@ -534,7 +531,7 @@ pve_vampiric_touch:Callback(function(spell)
     end
 end)
 
-pve_devouring_plague:Callback(function(spell)
+devouringPlague:Callback(function(spell)
     if not target or not target.exists then
         return
     end
@@ -555,7 +552,7 @@ pve_devouring_plague:Callback(function(spell)
     end
 end)
 
-pve_shadowfiend:Callback(function(spell)
+shadowfiend:Callback(function(spell)
     if not rotation.settings.use_cds then
         return
     end
@@ -573,7 +570,7 @@ pve_shadowfiend:Callback(function(spell)
     end
 end)
 
-pve_mind_blast:Callback(function(spell)
+mindBlast:Callback(function(spell)
     if not rotation.settings.use_mind_blast then
         return
     end
@@ -592,7 +589,7 @@ pve_mind_blast:Callback(function(spell)
     end
 end)
 
-pve_mind_flay:Callback(function(spell)
+mindFlay:Callback(function(spell)
     if not target or not target.exists then
         return
     end
@@ -608,7 +605,7 @@ pve_mind_flay:Callback(function(spell)
     end
 end)
 
-pve_mind_flay:Callback("mirror image", function(spell)
+mindFlay:Callback("mirror image", function(spell)
     if not player.buff("Luck of the Draw") then
         return
     end
@@ -628,7 +625,7 @@ pve_mind_flay:Callback("mirror image", function(spell)
     end)
 end)
 
-pve_shadow_word_pain:Callback(function(spell)
+shadowWordPain:Callback(function(spell)
     if not target or not target.exists then
         return
     end
@@ -652,7 +649,7 @@ pve_shadow_word_pain:Callback(function(spell)
     end
 end)
 
-pve_shadow_word_death:Callback(function(spell)
+shadowWordDeath:Callback(function(spell)
     if not target or not target.exists then
         return
     end
@@ -673,7 +670,7 @@ pve_shadow_word_death:Callback(function(spell)
     end
 end)
 
-pve_shadow_word_death:Callback("web wrap", function(spell)
+shadowWordDeath:Callback("web wrap", function(spell)
     if not player.buff("Luck of the Draw") then
         return
     end
@@ -693,7 +690,7 @@ pve_shadow_word_death:Callback("web wrap", function(spell)
     end)
 end)
 
-pve_mind_flay:Callback("web wrap", function(spell)
+mindFlay:Callback("web wrap", function(spell)
     if not player.buff("Luck of the Draw") then
         return
     end
