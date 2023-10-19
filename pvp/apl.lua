@@ -5,20 +5,12 @@ local player = awful.player
 if not awful.player.class2 == "PRIEST" then
     return
 end
-if not (rotation.settings.mode == "PvP") then
-    return
-end
 
 function rotation.pvp()
-    if player.mounted then
-        return
-    end
-    if player.buff("Drink") then
-        return
-    end
-    if player.casting == "Mind Control" or player.channel == "Mind Control" then
-        return
-    end
+    if not (rotation.settings.mode == "PvP") then return end
+    if player.mounted then return end
+    if player.buff("Drink") then return end
+    if player.casting == "Mind Control" or player.channel == "Mind Control" then return end
 
     shadow.Shadowform()
     shadow.VampiricEmbrace()

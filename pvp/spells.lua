@@ -3,12 +3,7 @@ local shadow = rotation.priest.shadow
 local Spell = awful.Spell
 local player, target, focus = awful.player, awful.target, awful.focus
 
-if not awful.player.class2 == "PRIEST" then
-    return
-end
-if not (rotation.settings.mode == "PvP") then
-    return
-end
+if not awful.player.class2 == "PRIEST" then return end
 
 awful.Populate({
     FearWard        = Spell(6346),
