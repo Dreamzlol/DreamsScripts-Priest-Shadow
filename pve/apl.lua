@@ -29,7 +29,11 @@ function rotation.pve()
 
     auto_target()
 
-    if not target.combat and not player.combat then return end
+    if not target.combat
+        and not player.combat
+        and not target.enemy then
+        return
+    end
 
     -- Dungeon Logic
     shadow.shadowWordDeath("web wrap")
@@ -59,12 +63,12 @@ function rotation.pve()
     shadow.shadowWordPain("opener")
 
     -- Main Rotation
-    shadow.shadowWordDeath()
     shadow.vampiricTouch()
     shadow.devouringPlague()
+    shadow.shadowWordPain()
     shadow.shadowfiend()
     shadow.mindBlast()
     shadow.innerFocus()
     shadow.mindFlay()
-    shadow.shadowWordPain()
+    shadow.shadowWordDeath()
 end
