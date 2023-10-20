@@ -19,7 +19,7 @@ local function auto_target()
 end
 
 function rotation.pve()
-    if not (rotation.settings.mode == "PvE") then return end
+    if not (rotation.settings.mode == "PvE (Default APL)") then return end
     if player.mounted or player.buff("Drink") then return end
 
     -- Buffs

@@ -15,28 +15,28 @@ end
 
 awful.Populate({
     -- Racials
-    berserking      = spell(26297, { beneficial = true }),
+    wowSims_berserking      = spell(26297, { beneficial = true }),
     -- Items
-    inventorySlot10 = item(getItemID(10)),
-    inventorySlot13 = item(getItemID(13)),
-    inventorySlot14 = item(getItemID(14)),
-    saroniteBomb    = item(41119),
-    potionOfSpeed   = item(40211),
+    wowSims_inventorySlot10 = item(getItemID(10)),
+    wowSims_inventorySlot13 = item(getItemID(13)),
+    wowSims_inventorySlot14 = item(getItemID(14)),
+    wowSims_saroniteBomb    = item(41119),
+    wowSims_potionOfSpeed   = item(40211),
     -- Buffs
-    shadowform      = spell(15473, { beneficial = true }),
-    innerFire       = spell(48168, { beneficial = true }),
-    vampiricEmbrace = spell(15286, { beneficial = true }),
-    dispersion      = spell(47585, { beneficial = true }),
-    innerFocus      = spell(14751, { beneficial = true }),
+    wowSims_shadowform      = spell(15473, { beneficial = true }),
+    wowSims_innerFire       = spell(48168, { beneficial = true }),
+    wowSims_vampiricEmbrace = spell(15286, { beneficial = true }),
+    wowSims_dispersion      = spell(47585, { beneficial = true }),
+    wowSims_innerFocus      = spell(14751, { beneficial = true }),
     -- Damage
-    mindBlast       = spell(48127, { damage = "magic" }),
-    mindFlay        = spell(48156, { damage = "magic" }),
-    vampiricTouch   = spell(48160, { damage = "magic", ignoreFacing = true }),
-    devouringPlague = spell(48300, { damage = "magic", ignoreFacing = true }),
-    shadowWordPain  = spell(48125, { damage = "magic", ignoreFacing = true }),
-    mindSear        = spell(53023, { damage = "magic", ignoreFacing = true }),
-    shadowfiend     = spell(34433, { damage = "magic", ignoreFacing = true }),
-    shadowWordDeath = spell(48158, { damage = "magic", ignoreFacing = true }),
+    wowSims_mindBlast       = spell(48127, { damage = "magic" }),
+    wowSims_mindFlay        = spell(48156, { damage = "magic" }),
+    wowSims_vampiricTouch   = spell(48160, { damage = "magic", ignoreFacing = true }),
+    wowSims_devouringPlague = spell(48300, { damage = "magic", ignoreFacing = true }),
+    wowSims_shadowWordPain  = spell(48125, { damage = "magic", ignoreFacing = true }),
+    wowSims_mindSear        = spell(53023, { damage = "magic", ignoreFacing = true }),
+    wowSims_shadowfiend     = spell(34433, { damage = "magic", ignoreFacing = true }),
+    wowSims_shadowWordDeath = spell(48158, { damage = "magic", ignoreFacing = true }),
 }, shadow, getfenv(1))
 
 local function filter(obj)
@@ -49,10 +49,56 @@ local function isBoss(unit)
     end
 end
 
-saroniteBomb:Update(function(item)
-    if not rotation.settings.useSaroniteBomb then
-        return
+wowSims_shadowWordDeath:Callback(function(spell)
+    if not target or not target.exists then return end
+    if target.buff("Shroud of the Occult") then return end
+    if target.name == "Mirror Image" then return end
+    if player.debuff("Profound Darkness") then return end
+
+    if player.moving then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
+        end
     end
+end)
+
+wowSims_shadowWordDeath:Callback("web wrap", function(spell)
+    if not player.buff("Luck of the Draw") then return end
+    if player.debuff("Web Wrap") then return end
+
+    awful.units.loop(function(obj)
+        if not obj then
+            return
+        end
+        if obj.name == "Web Wrap" then
+            if spell:Cast(obj) then
+                awful.alert(spell.name .. " (Web Wrap)", spell.id)
+                return
+            end
+        end
+    end)
+end)
+
+wowSims_mindFlay:Callback("web wrap", function(spell)
+    if not player.buff("Luck of the Draw") then return end
+    if player.debuff("Web Wrap") then return end
+
+    awful.units.loop(function(obj)
+        if not obj then
+            return
+        end
+        if obj.name == "Web Wrap" then
+            if spell:Cast(obj) then
+                awful.alert(spell.name .. " (Web Wrap)", spell.id)
+                return
+            end
+        end
+    end)
+end)
+
+wowSims_saroniteBomb:Update(function(item)
+    if not rotation.settings.useSaroniteBomb then return end
     if not target or not target.exists then return end
     if target.dist > item.range then return end
     if not item.usable then return end
@@ -66,7 +112,7 @@ saroniteBomb:Update(function(item)
     end
 end)
 
-potionOfSpeed:Update(function(item)
+wowSims_potionOfSpeed:Update(function(item)
     if not rotation.settings.use_potion_speed then return end
     if not target or not target.exists then return end
     if not item.usable then return end
@@ -80,7 +126,7 @@ potionOfSpeed:Update(function(item)
     end
 end)
 
-inventorySlot10:Update(function(item)
+wowSims_inventorySlot10:Update(function(item)
     if not rotation.settings.use_cds then return end
     if not target or not target.exists then return end
     if not item.usable then return end
@@ -94,7 +140,7 @@ inventorySlot10:Update(function(item)
     end
 end)
 
-inventorySlot13:Update(function(item)
+wowSims_inventorySlot13:Update(function(item)
     if not rotation.settings.use_cds then return end
     if not target or not target.exists then return end
     if not item.usable then return end
@@ -108,7 +154,7 @@ inventorySlot13:Update(function(item)
     end
 end)
 
-inventorySlot14:Update(function(item)
+wowSims_inventorySlot14:Update(function(item)
     if not rotation.settings.use_cds then return end
     if not target or not target.exists then return end
     if not item.usable then return end
@@ -139,7 +185,7 @@ awful.Draw(function(draw)
     end)
 end)
 
-shadowform:Callback(function(spell)
+wowSims_shadowform:Callback(function(spell)
     if not player.buff(spell.id) then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
@@ -148,7 +194,7 @@ shadowform:Callback(function(spell)
     end
 end)
 
-innerFire:Callback(function(spell)
+wowSims_innerFire:Callback(function(spell)
     if not player.buff(spell.id) then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
@@ -157,7 +203,7 @@ innerFire:Callback(function(spell)
     end
 end)
 
-berserking:Callback(function(spell)
+wowSims_berserking:Callback(function(spell)
     if not rotation.settings.use_cds then return end
 
     if isBoss(target) then
@@ -168,24 +214,7 @@ berserking:Callback(function(spell)
     end
 end)
 
-innerFocus:Callback(function(spell)
-    if not rotation.settings.use_cds then return end
-    if player.moving then return end
-    if mindBlast.cd < 2 then return end
-    if target.debuffRemains("Vampiric Touch", player) < 2
-        and target.debuffRemains("Devouring Plague", player) < 2
-        and target.debuffRemains("Shadow Word: Pain", player) < 2 then
-        return
-    end
-
-    if player.buffStacks("Shadow Weaving") == 5 and isBoss(target) then
-        if spell:Cast() then
-            return awful.alert(spell.name, spell.id)
-        end
-    end
-end)
-
-vampiricEmbrace:Callback(function(spell)
+wowSims_vampiricEmbrace:Callback(function(spell)
     if not player.buff(spell.id) then
         if spell:Cast() then
             awful.alert(spell.name, spell.id)
@@ -194,7 +223,7 @@ vampiricEmbrace:Callback(function(spell)
     end
 end)
 
-shadowWordPain:Callback("aoe", function(spell)
+wowSims_shadowWordPain:Callback("aoe", function(spell)
     if not rotation.settings.useAoe then return end
     if not rotation.settings.aoeRotation["Shadow Word: Pain"] then return end
 
@@ -213,7 +242,7 @@ shadowWordPain:Callback("aoe", function(spell)
     end)
 end)
 
-vampiricTouch:Callback("aoe", function(spell)
+wowSims_vampiricTouch:Callback("aoe", function(spell)
     if not rotation.settings.useAoe then return end
     if not rotation.settings.aoeRotation["Vampiric Touch"] then return end
     if player.casting then return end
@@ -234,7 +263,7 @@ vampiricTouch:Callback("aoe", function(spell)
     end)
 end)
 
-mindSear:Callback("aoe", function(spell)
+wowSims_mindSear:Callback("aoe", function(spell)
     if not rotation.settings.useAoe then return end
     if not rotation.settings.aoeRotation["Mind Sear"] then return end
     if not target or not target.exists then return end
@@ -249,7 +278,7 @@ mindSear:Callback("aoe", function(spell)
     end
 end)
 
-mindSear:Callback("aoe_vt", function(spell)
+wowSims_mindSear:Callback("aoe_vt", function(spell)
     if not rotation.settings.useAoe then return end
     if not rotation.settings.aoeRotation["Mind Sear"] then return end
     if not target or not target.exists then return end
@@ -265,17 +294,16 @@ mindSear:Callback("aoe_vt", function(spell)
     end
 end)
 
--- Opener Rotation
-vampiricTouch:Callback("opener", function(spell)
+-- Main Rotation
+wowSims_vampiricTouch:Callback("opener", function(spell)
     if not target or not target.exists then return end
+    if target.ttd < rotation.settings.ttd_timer then return end
     if player.casting then return end
     if player.moving then return end
     if target.buff("Shroud of the Occult") then return end
     if target.name == "Mirror Image" then return end
-    if target.ttd < rotation.settings.ttd_timer then return end
-    if player.buff("Shadow Weaving") then return end
 
-    if not target.debuff(spell.id, player) or target.debuffRemains(spell.id, player) <= spell.castTime then
+    if not target.debuff(spell.id, player) then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -283,39 +311,11 @@ vampiricTouch:Callback("opener", function(spell)
     end
 end)
 
-devouringPlague:Callback("opener", function(spell)
-    if not target or not target.exists then return end
-    if not target.debuff("Vampiric Touch", player) then return end
-    if target.buff("Shroud of the Occult") then return end
-    if target.ttd < rotation.settings.ttd_timer then return end
-
-    if player.buffStacks("Shadow Weaving") <= 1 and not target.debuff(spell.id, player) then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
-        end
-    end
-end)
-
-mindBlast:Callback("opener", function(spell)
-    if not rotation.settings.use_mind_blast then return end
-    if not target or not target.exists then return end
-    if player.moving then return end
-
-    if player.buffStacks("Shadow Weaving") <= 2 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
-        end
-    end
-end)
-
-shadowfiend:Callback("opener", function(spell)
+wowSims_shadowfiend:Callback(function(spell)
     if not rotation.settings.use_cds then return end
     if not target or not target.exists then return end
-    if not target.debuff("Vampiric Touch", player) then return end
 
-    if player.buffStacks("Shadow Weaving") <= 3 and isBoss(target) then
+    if isBoss(target) then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -323,23 +323,25 @@ shadowfiend:Callback("opener", function(spell)
     end
 end)
 
-mindFlay:Callback("opener", function(spell)
+wowSims_devouringPlague:Callback("refresh", function(spell)
     if not target or not target.exists then return end
-    if player.moving then return end
-
-    if player.buffStacks("Shadow Weaving") <= 3 and target.debuff("Vampiric Touch", player) then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
-        end
-    end
-end)
-
-shadowWordPain:Callback("opener", function(spell)
-    if not target or not target.exists then return end
+    if target.ttd < rotation.settings.ttd_timer then return end
     if target.buff("Shroud of the Occult") then return end
     if target.name == "Mirror Image" then return end
+
+    if target.debuffRemains(spell.id, player) <= 2.0 then
+        if spell:Cast(target) then
+            awful.alert(spell.name, spell.id)
+            return
+        end
+    end
+end)
+
+wowSims_shadowWordPain:Callback(function(spell)
+    if not target or not target.exists then return end
     if target.ttd < rotation.settings.ttd_timer then return end
+    if target.buff("Shroud of the Occult") then return end
+    if target.name == "Mirror Image" then return end
 
     if player.buffStacks("Shadow Weaving") == 5 and not target.debuff(spell.id, player) then
         if spell:Cast(target) then
@@ -349,16 +351,15 @@ shadowWordPain:Callback("opener", function(spell)
     end
 end)
 
--- Main Rotation
-vampiricTouch:Callback(function(spell)
+wowSims_vampiricTouch:Callback("refresh", function(spell)
     if not target or not target.exists then return end
+    if target.ttd < rotation.settings.ttd_timer then return end
     if player.casting then return end
     if player.moving then return end
     if target.buff("Shroud of the Occult") then return end
     if target.name == "Mirror Image" then return end
-    if target.ttd < rotation.settings.ttd_timer then return end
 
-    if player.buffStacks("Shadow Weaving") == 5 and target.debuffRemains(spell.id, player) <= spell.castTime then
+    if target.debuffRemains(spell.id, player) <= spell.castTime then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -366,12 +367,13 @@ vampiricTouch:Callback(function(spell)
     end
 end)
 
-devouringPlague:Callback(function(spell)
+wowSims_devouringPlague:Callback(function(spell)
     if not target or not target.exists then return end
+    if target.ttd < rotation.settings.ttd_timer then return end
     if target.buff("Shroud of the Occult") then return end
-    if target.ttd < rotation.settings.ttd_timer then return end
+    if target.name == "Mirror Image" then return end
 
-    if player.buffStacks("Shadow Weaving") == 5 and target.debuffRemains(spell.id, player) <= 1.75 then
+    if not target.debuff(spell.id, player) then
         if spell:Cast(target) then
             awful.alert(spell.name, spell.id)
             return
@@ -379,118 +381,40 @@ devouringPlague:Callback(function(spell)
     end
 end)
 
-shadowfiend:Callback(function(spell)
-    if not rotation.settings.use_cds then return end
+wowSims_mindBlast:Callback(function(spell)
+    if not rotation.settings.use_mind_blast then return end
     if not target or not target.exists then return end
+    if player.moving then return end
+
+    if spell:Cast(target) then
+        awful.alert(spell.name, spell.id)
+        return
+    end
+end)
+
+wowSims_innerFocus:Callback(function(spell)
+    if not rotation.settings.use_cds then return end
+    if player.moving then return end
+    if wowSims_mindBlast.cd < 2 then return end
+    if target.debuffRemains("Vampiric Touch", player) < 2
+        and target.debuffRemains("Devouring Plague", player) < 2
+        and target.debuffRemains("Shadow Word: Pain", player) < 2 then
+        return
+    end
 
     if player.buffStacks("Shadow Weaving") == 5 and isBoss(target) then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
+        if spell:Cast() then
+            return awful.alert(spell.name, spell.id)
         end
     end
 end)
 
-mindBlast:Callback(function(spell)
-    if not rotation.settings.use_mind_blast then return end
+wowSims_mindFlay:Callback(function(spell)
     if not target or not target.exists then return end
     if player.moving then return end
 
-    if player.buffStacks("Shadow Weaving") == 5 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
-        end
+    if spell:Cast(target) then
+        awful.alert(spell.name, spell.id)
+        return
     end
-end)
-
-mindFlay:Callback(function(spell)
-    if not target or not target.exists then return end
-    if player.moving then return end
-
-    if player.buffStacks("Shadow Weaving") == 5 then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
-        end
-    end
-end)
-
-mindFlay:Callback("mirror image", function(spell)
-    if not player.buff("Luck of the Draw") then return end
-    if player.moving then return end
-
-    awful.enemies.loop(function(enemy)
-        if not enemy then
-            return
-        end
-        if enemy.name == "Mirror Image" then
-            if spell:Cast(enemy) then
-                awful.alert(spell.name, spell.id)
-                return
-            end
-        end
-    end)
-end)
-
-shadowWordPain:Callback(function(spell)
-    if not target or not target.exists then return end
-    if target.buff("Shroud of the Occult") then return end
-    if target.name == "Mirror Image" then return end
-    if target.ttd < rotation.settings.ttd_timer then return end
-
-    if player.buffStacks("Shadow Weaving") == 5 and not target.debuff(spell.id, player) then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
-        end
-    end
-end)
-
-shadowWordDeath:Callback(function(spell)
-    if not target or not target.exists then return end
-    if target.buff("Shroud of the Occult") then return end
-    if target.name == "Mirror Image" then return end
-    if player.debuff("Profound Darkness") then return end
-
-    if player.moving then
-        if spell:Cast(target) then
-            awful.alert(spell.name, spell.id)
-            return
-        end
-    end
-end)
-
-shadowWordDeath:Callback("web wrap", function(spell)
-    if not player.buff("Luck of the Draw") then return end
-    if player.debuff("Web Wrap") then return end
-
-    awful.units.loop(function(obj)
-        if not obj then
-            return
-        end
-        if obj.name == "Web Wrap" then
-            if spell:Cast(obj) then
-                awful.alert(spell.name .. " (Web Wrap)", spell.id)
-                return
-            end
-        end
-    end)
-end)
-
-mindFlay:Callback("web wrap", function(spell)
-    if not player.buff("Luck of the Draw") then return end
-    if player.debuff("Web Wrap") then return end
-
-    awful.units.loop(function(obj)
-        if not obj then
-            return
-        end
-        if obj.name == "Web Wrap" then
-            if spell:Cast(obj) then
-                awful.alert(spell.name .. " (Web Wrap)", spell.id)
-                return
-            end
-        end
-    end)
 end)

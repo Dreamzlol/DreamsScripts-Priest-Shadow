@@ -98,7 +98,8 @@ Mode:Dropdown({
     var = "mode",
     tooltip = "Select the Rotation Mode.",
     options = {
-        { label = awful.textureEscape(15336, 16) .. " PvE", value = "PvE", tooltip = "Use PvE Rotation" },
+        { label = awful.textureEscape(15336, 16) .. " PvE (Default APL)", value = "PvE (Default APL)", tooltip = "Use PvE Rotation with Default APL" },
+        { label = awful.textureEscape(33193, 16) .. " PvE (WoWSims APL)", value = "PvE (WoWSims APL)", tooltip = "Use PvE Rotation with WoWSims APL" },
         { label = awful.textureEscape(15487, 16) .. " PvP", value = "PvP", tooltip = "Use PvP Rotation" },
     },
     placeholder = "None",
@@ -132,7 +133,7 @@ Spells:Slider({
     min = 0,
     max = 60,
     step = 1,
-    default = 8,
+    default = 10,
     valueType = " secs",
     tooltip = "Time To Die for Dots in seconds. Example: If the unit lives longer than 8 Seconds, then it should cast Dots. (Vampiric Touch, Devouring Plague, Shadow Word: Pain)"
 })

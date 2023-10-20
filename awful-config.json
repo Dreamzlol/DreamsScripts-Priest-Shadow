@@ -4,6 +4,8 @@
         "gui",
         "pve/apl",
         "pve/spells",
+        "wowsims/apl",
+        "wowsims/spells",
         "pvp/apl",
         "pvp/spells",
         "actor"
