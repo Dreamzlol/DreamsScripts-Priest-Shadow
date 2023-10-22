@@ -418,3 +418,20 @@ wowSims_mindFlay:Callback(function(spell)
         return
     end
 end)
+
+wowSims_mindFlay:Callback("mirror image", function(spell)
+    if not player.buff("Luck of the Draw") then return end
+    if player.moving then return end
+
+    awful.enemies.loop(function(enemy)
+        if not enemy then
+            return
+        end
+        if enemy.name == "Mirror Image" then
+            if spell:Cast(enemy) then
+                awful.alert(spell.name, spell.id)
+                return
+            end
+        end
+    end)
+end)
