@@ -20,7 +20,7 @@ awful.Populate({
     wowSims_inventorySlot10 = item(getItemID(10)),
     wowSims_inventorySlot13 = item(getItemID(13)),
     wowSims_inventorySlot14 = item(getItemID(14)),
-    wowSims_saroniteBomb    = item(41119),
+    wowSims_saroniteBomb    = item(41119, { radius = 10 }),
     wowSims_potionOfSpeed   = item(40211),
     -- Buffs
     wowSims_shadowform      = spell(15473, { beneficial = true }),
@@ -412,6 +412,10 @@ end)
 wowSims_mindFlay:Callback(function(spell)
     if not target or not target.exists then return end
     if player.moving then return end
+
+    if target.ttd > rotation.settings.ttd_timer then
+        if target.debuffRemains("Vampiric Touch", player) <= 2 then return end
+    end
 
     if spell:Cast(target) then
         awful.alert(spell.name, spell.id)

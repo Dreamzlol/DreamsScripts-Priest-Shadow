@@ -20,7 +20,7 @@ awful.Populate({
     inventorySlot10 = item(getItemID(10)),
     inventorySlot13 = item(getItemID(13)),
     inventorySlot14 = item(getItemID(14)),
-    saroniteBomb    = item(41119),
+    saroniteBomb    = item(41119, { radius = 10 }),
     potionOfSpeed   = item(40211),
     -- Buffs
     shadowform      = spell(15473, { beneficial = true }),
