@@ -7,7 +7,7 @@ if not awful.player.class2 == "PRIEST" then
 end
 
 awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Shadow Loaded!")
-awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Version: 2.1.8")
+awful.print("|cffFFFFFFDreams{ |cff00B5FFScripts |cffFFFFFF} - Version: 2.1.9")
 
 shadow:Init(function()
     if rotation.settings.mode ~= current_mode then
