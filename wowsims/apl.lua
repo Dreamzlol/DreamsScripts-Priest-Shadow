@@ -56,14 +56,6 @@ function rotation.wowSims()
     shadow.wowSims_vampiricTouch("opener")
     shadow.wowSims_shadowfiend()
 
-    -- Items / Cooldowns
-    shadow.wowSims_saroniteBomb()
-    shadow.wowSims_berserking()
-    shadow.wowSims_potionOfSpeed()
-    shadow.wowSims_inventorySlot10()
-    shadow.wowSims_inventorySlot13()
-    shadow.wowSims_inventorySlot14()
-
     shadow.wowSims_devouringPlague("refresh")
     shadow.wowSims_shadowWordPain()
     shadow.wowSims_vampiricTouch("refresh")

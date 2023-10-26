@@ -16,62 +16,47 @@ function rotation.pvp()
     shadow.VampiricEmbrace()
 
     shadow.HolyNova("stealth")
-    shadow.ShadowWordDeath("tremor")
-    shadow.AutoAttack("totems")
+    shadow.Shoot("tremor")
+    shadow.PsychicHorror("disarm")
     shadow.ShadowWordDeath("polymorph")
     shadow.ShadowWordDeath("seduction")
-    shadow.engineer_gloves("execute")
     shadow.ShadowWordDeath("execute")
+    shadow.DevouringPlague("execute")
     shadow.Shadowfiend()
     shadow.FearWard()
 
     -- CC
-    shadow.Silence()
-    shadow.PsychicHorror()
-
-    shadow.DispelMagic("healer")
-    shadow.MassDispel("combat")
-    shadow.MassDispel("immune")
     shadow.PsychicScream("lowhp")
     shadow.PsychicScream("mutiple")
     shadow.PsychicScream("focus")
-    shadow.DesperatePrayer()
+    shadow.Silence()
+    shadow.PsychicHorror("cc")
+
+    shadow.DispelMagic("defensive")
+    shadow.DispelMagic("healer")
+    shadow.MassDispel("combat")
+    shadow.MassDispel("immune")
+    shadow.AbolishDisease()
+    shadow.Fade()
     shadow.Dispersion()
+    shadow.InnerFire()
     shadow.PowerWordShield()
     shadow.PrayerOfMending()
-    shadow.InnerFire()
-    shadow.Fade()
-
-    -- Heal
-    shadow.BindingHeal()
-    shadow.FlashHeal()
+    shadow.HolyNova("heal")
     shadow.Renew()
 
-    shadow.VampiricTouch("sustain")
-    shadow.DispelMagic("defensive")
+    shadow.InventorySlot10()
+    shadow.VampiricTouch()
+    shadow.DevouringPlague()
+    shadow.ShadowWordPain()
+
+    shadow.BindingHeal()
+    shadow.FlashHeal()
+
     shadow.DispelMagic("offensive")
-
-    -- Burst Damage
-    if awful.burst then
-        shadow.VampiricTouch("sustain")
-        shadow.Shadowfiend("burst")
-        shadow.MindBlast("sustain")
-        shadow.engineer_gloves("burst")
-        shadow.ShadowWordDeath("burst")
-        shadow.ShadowWordPain("sustain")
-        shadow.DevouringPlague("sustain")
-    end
-
-    shadow.ShadowWordPain("sustain")
-    shadow.DevouringPlague("sustain")
-
     shadow.ShackleUndead("lich")
     shadow.ShackleUndead("gargoyle")
-    shadow.AbolishDisease()
-
     shadow.HolyNova("snakes")
-
-    -- Sustained Damage
-    shadow.MindFlay("sustain")
-    shadow.MindBlast("sustain")
+    shadow.MindBlast()
+    shadow.MindFlay()
 end
