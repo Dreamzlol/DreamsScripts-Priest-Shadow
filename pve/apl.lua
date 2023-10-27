@@ -34,6 +34,8 @@ function rotation.pve()
         return
     end
 
+    shadow.healthstone()
+
     -- Dungeon Logic
     shadow.shadowWordDeath("web wrap")
     shadow.mindFlay("web wrap")

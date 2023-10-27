@@ -22,6 +22,7 @@ awful.Populate({
     inventorySlot14 = item(getItemID(14)),
     saroniteBomb    = item(41119, { radius = 10 }),
     potionOfSpeed   = item(40211),
+    healthstone     = item({ 36892, 36894, 36893, 36891, 36890, 36889 }),
     -- Buffs
     shadowform      = spell(15473, { beneficial = true }),
     innerFire       = spell(48168, { beneficial = true }),
@@ -63,9 +64,7 @@ function shadow.WasCastingCheck()
 end
 
 saroniteBomb:Update(function(item)
-    if not rotation.settings.useSaroniteBomb then
-        return
-    end
+    if not rotation.settings.useSaroniteBomb then return end
     if not target or not target.exists then return end
     if target.dist > item.range then return end
     if not item.usable then return end
@@ -80,7 +79,7 @@ saroniteBomb:Update(function(item)
 end)
 
 potionOfSpeed:Update(function(item)
-    if not rotation.settings.use_potion_speed then return end
+    if not rotation.settings.usePotionSpeed then return end
     if not target or not target.exists then return end
     if not item.usable then return end
     if player.moving then return end
@@ -89,6 +88,17 @@ potionOfSpeed:Update(function(item)
     if target.level == -1 then
         if item:Use() then
             return awful.alert(item.name, 53908)
+        end
+    end
+end)
+
+healthstone:Update(function(item)
+    if not item.usable then return end
+    if player.casting or player.channel then return end
+
+    if player.hp <= rotation.settings.useHealthstone then
+        if item:Use() then
+            return awful.alert(item.name, item.id)
         end
     end
 end)

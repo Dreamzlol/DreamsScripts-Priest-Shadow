@@ -138,6 +138,39 @@ Spells:Slider({
     tooltip = "Time To Die for Dots in seconds. Example: If the unit lives longer than 8 Seconds, then it should cast Dots. (Vampiric Touch, Devouring Plague, Shadow Word: Pain)"
 })
 
+local Items = gui:Tab(awful.textureEscape(10890, 16) .. " Item Settings")
+Items:Text({
+    text = "|cff00B5FFItem Settings",
+    header = true,
+    paddingBottom = 10,
+})
+
+Items:Slider({
+    text = "Healthstone",
+    var = "useHealthstone",
+    min = 0,
+    max = 100,
+    step = 1,
+    default = 20,
+    valueType = "%",
+    tooltip = "Use Healthstone at certain HP threshhold"
+})
+
+Items:Checkbox({
+    text = "Use Saronite Bomb",
+    var = "useSaroniteBomb",
+    tooltip = "Use Saronite Bomb while fighting against a Raid Boss",
+    default = true
+})
+
+Items:Checkbox({
+    text = "Use Potion of Speed",
+    var = "usePotionSpeed",
+    tooltip = "Use Potion of Speed while fighting against a Raid Boss, you still need too pre pot",
+    default = true
+})
+
+
 local Toggles = gui:Tab(awful.textureEscape(8105, 16) .. " Toggles")
 Toggles:Text({
     text = "|cff00B5FFToggles (PvE)",
@@ -173,17 +206,23 @@ Toggles:Checkbox({
     default = true
 })
 
+Toggles:Text({
+    text = "|cff00B5FFToggles (PvP)",
+    header = true,
+    paddingBottom = 10,
+})
+
 Toggles:Checkbox({
-    text = "Use Saronite Bomb (Raid Boss)",
-    var = "useSaroniteBomb",
-    tooltip = "Use Saronite Bomb on a Raid Boss",
+    text = "Use Silence",
+    var = "useSilence",
+    tooltip = "Use Silence for Heal & Crowd Control Spells",
     default = true
 })
 
 Toggles:Checkbox({
-    text = "Use Potion of Speed (Raid Boss)",
-    var = "use_potion_speed",
-    tooltip = "Use Potion of Speed while fighting against a Raid Boss, you still need too pre pot!",
+    text = "Use Psychic Horror",
+    var = "usePsychicHorror",
+    tooltip = "Use Psychic Horror on Focus if current Target is under 60% HP or a Rogue has Shadow Dance or Warrior Bladestorm up",
     default = true
 })
 

@@ -55,19 +55,6 @@ local function unitFilter(obj)
     return obj.los and obj.exists and not obj.dead
 end
 
-local wasCasting = {}
-function WasCastingCheck()
-    local time = awful.time
-    if player.casting then
-        wasCasting[player.castingid] = time
-    end
-    for spell, when in pairs(wasCasting) do
-        if time - when > 0.100+awful.buffer then
-            wasCasting[spell] = nil
-        end
-    end
-end
-
 local function findTremorTotem()
     if awful.fighting("SHAMAN") then
         return awful.totems.find(function(obj)
@@ -220,6 +207,7 @@ local interruptChannel = {
 }
 
 Silence:Callback(function(spell)
+    if not rotation.settings.useSilence then return end
     if target.hp > 80 then return end
 
     awful.enemies.loop(function(enemy)
@@ -247,6 +235,8 @@ Silence:Callback(function(spell)
 end)
 
 PsychicHorror:Callback("disarm", function(spell)
+    if not rotation.settings.usePsychicHorror then return end
+
     awful.enemies.loop(function(enemy)
         if enemy.buff("Bladestorm") then
             return spell:Cast(enemy)
@@ -257,6 +247,8 @@ PsychicHorror:Callback("disarm", function(spell)
 end)
 
 PsychicHorror:Callback("cc", function(spell)
+    if not rotation.settings.usePsychicHorror then return end
+
     if focus.exists and target.hp <= 60 and not focus.debuff("Silence") and not focus.bcc then
         return spell:Cast(focus)
     end

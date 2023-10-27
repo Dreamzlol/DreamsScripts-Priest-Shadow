@@ -34,6 +34,8 @@ function rotation.wowSims()
         return
     end
 
+    shadow.wowSims_healthstone()
+    
     -- Dungeon Logic
     shadow.wowSims_shadowWordDeath("web wrap")
     shadow.wowSims_mindFlay("web wrap")

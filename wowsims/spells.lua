@@ -22,6 +22,7 @@ awful.Populate({
     wowSims_inventorySlot14 = item(getItemID(14)),
     wowSims_saroniteBomb    = item(41119, { radius = 10 }),
     wowSims_potionOfSpeed   = item(40211),
+    wowSims_healthstone     = item({ 6948, 36894, 36893, 36891, 36890, 36889 }),
     -- Buffs
     wowSims_shadowform      = spell(15473, { beneficial = true }),
     wowSims_innerFire       = spell(48168, { beneficial = true }),
@@ -126,7 +127,7 @@ wowSims_saroniteBomb:Update(function(item)
 end)
 
 wowSims_potionOfSpeed:Update(function(item)
-    if not rotation.settings.use_potion_speed then return end
+    if not rotation.settings.usePotionSpeed then return end
     if not target or not target.exists then return end
     if not item.usable then return end
     if player.moving then return end
@@ -135,6 +136,17 @@ wowSims_potionOfSpeed:Update(function(item)
     if target.level == -1 then
         if item:Use() then
             return awful.alert(item.name, 53908)
+        end
+    end
+end)
+
+wowSims_healthstone:Update(function(item)
+    if not item.usable then return end
+    if player.casting or player.channel then return end
+
+    if player.hp <= rotation.settings.useHealthstone then
+        if item:Use() then
+            return awful.alert(item.name, item.id)
         end
     end
 end)
