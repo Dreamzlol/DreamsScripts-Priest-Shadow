@@ -55,6 +55,19 @@ local function unitFilter(obj)
     return obj.los and obj.exists and not obj.dead
 end
 
+local wasCasting = {}
+function WasCastingCheck()
+    local time = awful.time
+    if player.casting then
+        wasCasting[player.castingid] = time
+    end
+    for spell, when in pairs(wasCasting) do
+        if time - when > 0.100+awful.buffer then
+            wasCasting[spell] = nil
+        end
+    end
+end
+
 local function findTremorTotem()
     if awful.fighting("SHAMAN") then
         return awful.totems.find(function(obj)
@@ -207,8 +220,9 @@ local interruptChannel = {
 }
 
 Silence:Callback(function(spell)
+    if target.hp > 80 then return end
+
     awful.enemies.loop(function(enemy)
-        if not target.hp <= 80 then return end
         if not enemy.casting and not enemy.channeling then return end
         if enemy.silenceDR <= 0.25 then return end
 

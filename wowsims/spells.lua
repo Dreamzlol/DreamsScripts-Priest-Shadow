@@ -49,6 +49,19 @@ local function isBoss(unit)
     end
 end
 
+local wasCasting = {}
+function shadow.WasCastingCheck()
+    local time = awful.time
+    if player.casting then
+        wasCasting[player.castingid] = time
+    end
+    for spell, when in pairs(wasCasting) do
+        if time - when > 0.100 + awful.buffer then
+            wasCasting[spell] = nil
+        end
+    end
+end
+
 wowSims_shadowWordDeath:Callback(function(spell)
     if not target or not target.exists then return end
     if target.buff("Shroud of the Occult") then return end
@@ -245,7 +258,7 @@ end)
 wowSims_vampiricTouch:Callback("aoe", function(spell)
     if not rotation.settings.useAoe then return end
     if not rotation.settings.aoeRotation["Vampiric Touch"] then return end
-    if player.casting then return end
+    if wasCasting[spell.id] then return end
     if player.moving then return end
 
     awful.enemies.within(40).filter(filter).loop(function(enemy)
@@ -298,7 +311,7 @@ end)
 wowSims_vampiricTouch:Callback("opener", function(spell)
     if not target or not target.exists then return end
     if target.ttd < rotation.settings.ttd_timer then return end
-    if player.casting then return end
+    if wasCasting[spell.id] then return end
     if player.moving then return end
     if target.buff("Shroud of the Occult") then return end
     if target.name == "Mirror Image" then return end
@@ -354,7 +367,7 @@ end)
 wowSims_vampiricTouch:Callback("refresh", function(spell)
     if not target or not target.exists then return end
     if target.ttd < rotation.settings.ttd_timer then return end
-    if player.casting then return end
+    if wasCasting[spell.id] then return end
     if player.moving then return end
     if target.buff("Shroud of the Occult") then return end
     if target.name == "Mirror Image" then return end

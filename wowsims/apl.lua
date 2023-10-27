@@ -28,6 +28,7 @@ function rotation.wowSims()
     shadow.wowSims_vampiricEmbrace()
 
     auto_target()
+    shadow.WasCastingCheck()
 
     if not target.combat and not player.combat then
         return

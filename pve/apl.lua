@@ -28,6 +28,7 @@ function rotation.pve()
     shadow.vampiricEmbrace()
 
     auto_target()
+    shadow.WasCastingCheck()
 
     if not target.combat and not player.combat then
         return
