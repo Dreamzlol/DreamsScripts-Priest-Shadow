@@ -164,6 +164,13 @@ Items:Checkbox({
 })
 
 Items:Checkbox({
+    text = "Use Global Thermal Sapper Charge",
+    var = "useGlobalSapperCharge",
+    tooltip = "Use Global Thermal Sapper Charge while fighting against a Raid Boss",
+    default = true
+})
+
+Items:Checkbox({
     text = "Use Potion of Speed",
     var = "usePotionSpeed",
     tooltip = "Use Potion of Speed while fighting against a Raid Boss, you still need too pre pot",

@@ -15,29 +15,30 @@ end
 
 awful.Populate({
     -- Racials
-    wowSims_berserking      = spell(26297, { beneficial = true }),
+    wowSims_berserking         = spell(26297, { beneficial = true }),
     -- Items
-    wowSims_inventorySlot10 = item(getItemID(10)),
-    wowSims_inventorySlot13 = item(getItemID(13)),
-    wowSims_inventorySlot14 = item(getItemID(14)),
-    wowSims_saroniteBomb    = item(41119, { radius = 10 }),
-    wowSims_potionOfSpeed   = item(40211),
-    wowSims_healthstone     = item({ 6948, 36894, 36893, 36891, 36890, 36889 }),
+    wowSims_inventorySlot10    = item(getItemID(10)),
+    wowSims_inventorySlot13    = item(getItemID(13)),
+    wowSims_inventorySlot14    = item(getItemID(14)),
+    wowSims_saroniteBomb       = item(41119),
+    wowSims_globalSapperCharge = item(42641),
+    wowSims_potionOfSpeed      = item(40211),
+    wowSims_healthstone        = item({ 6948, 36894, 36893, 36891, 36890, 36889 }),
     -- Buffs
-    wowSims_shadowform      = spell(15473, { beneficial = true }),
-    wowSims_innerFire       = spell(48168, { beneficial = true }),
-    wowSims_vampiricEmbrace = spell(15286, { beneficial = true }),
-    wowSims_dispersion      = spell(47585, { beneficial = true }),
-    wowSims_innerFocus      = spell(14751, { beneficial = true }),
+    wowSims_shadowform         = spell(15473, { beneficial = true }),
+    wowSims_innerFire          = spell(48168, { beneficial = true }),
+    wowSims_vampiricEmbrace    = spell(15286, { beneficial = true }),
+    wowSims_dispersion         = spell(47585, { beneficial = true }),
+    wowSims_innerFocus         = spell(14751, { beneficial = true }),
     -- Damage
-    wowSims_mindBlast       = spell(48127, { damage = "magic" }),
-    wowSims_mindFlay        = spell(48156, { damage = "magic" }),
-    wowSims_vampiricTouch   = spell(48160, { damage = "magic", ignoreFacing = true }),
-    wowSims_devouringPlague = spell(48300, { damage = "magic", ignoreFacing = true }),
-    wowSims_shadowWordPain  = spell(48125, { damage = "magic", ignoreFacing = true }),
-    wowSims_mindSear        = spell(53023, { damage = "magic", ignoreFacing = true }),
-    wowSims_shadowfiend     = spell(34433, { damage = "magic", ignoreFacing = true }),
-    wowSims_shadowWordDeath = spell(48158, { damage = "magic", ignoreFacing = true }),
+    wowSims_mindBlast          = spell(48127, { damage = "magic" }),
+    wowSims_mindFlay           = spell(48156, { damage = "magic" }),
+    wowSims_vampiricTouch      = spell(48160, { damage = "magic", ignoreFacing = true }),
+    wowSims_devouringPlague    = spell(48300, { damage = "magic", ignoreFacing = true }),
+    wowSims_shadowWordPain     = spell(48125, { damage = "magic", ignoreFacing = true }),
+    wowSims_mindSear           = spell(53023, { damage = "magic", ignoreFacing = true }),
+    wowSims_shadowfiend        = spell(34433, { damage = "magic", ignoreFacing = true }),
+    wowSims_shadowWordDeath    = spell(48158, { damage = "magic", ignoreFacing = true }),
 }, shadow, getfenv(1))
 
 local function filter(obj)
@@ -111,10 +112,26 @@ wowSims_mindFlay:Callback("web wrap", function(spell)
     end)
 end)
 
+wowSims_globalSapperCharge:Update(function(item)
+    if not rotation.settings.useGlobalSapperCharge then return end
+    if not target or not target.exists then return end
+    if target.distance >= 13 then return end
+    if target.moving then return end
+    if not item.usable then return end
+    if player.casting or player.channel then return end
+
+    if target.level == -1 then
+        if item:Use() then
+            return awful.alert(item.name, item.id)
+        end
+    end
+end)
+
 wowSims_saroniteBomb:Update(function(item)
     if not rotation.settings.useSaroniteBomb then return end
     if not target or not target.exists then return end
-    if target.dist > item.range then return end
+    if target.distance >= 27 then return end
+    if target.moving then return end
     if not item.usable then return end
     if player.moving then return end
     if player.casting or player.channel then return end

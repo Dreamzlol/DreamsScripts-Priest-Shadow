@@ -48,6 +48,7 @@ function rotation.pve()
     shadow.mindSear("aoe_vt")
 
     -- Items
+    shadow.globalSapperCharge()
     shadow.saroniteBomb()
     shadow.berserking()
     shadow.inventorySlot10()

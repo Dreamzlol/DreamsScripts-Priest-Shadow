@@ -35,7 +35,7 @@ function rotation.wowSims()
     end
 
     shadow.wowSims_healthstone()
-    
+
     -- Dungeon Logic
     shadow.wowSims_shadowWordDeath("web wrap")
     shadow.wowSims_mindFlay("web wrap")
@@ -48,6 +48,7 @@ function rotation.wowSims()
     shadow.wowSims_mindSear("aoe_vt")
 
     -- Items
+    shadow.wowSims_globalSapperCharge()
     shadow.wowSims_saroniteBomb()
     shadow.wowSims_berserking()
     shadow.wowSims_inventorySlot10()
