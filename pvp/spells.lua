@@ -33,17 +33,23 @@ awful.Populate({
     MindFlay        = spell(48156, { effect = "magic" }),
     DevouringPlague = spell(48300, { effect = "magic", targeted = true, ignoreFacing = true, ignoreMoving = true }),
     ShadowWordPain  = spell(48125, { effect = "magic", targeted = true, ignoreFacing = true, ignoreMoving = true }),
-    ShadowWordDeath = spell(48158, { effect = "magic", targeted = true, ignoreFacing = true, ignoreMoving = true, ignoreCasting = true, ignoreChanneling = true }),
+    ShadowWordDeath = spell(48158,
+        { effect = "magic", targeted = true, ignoreFacing = true, ignoreMoving = true, ignoreCasting = true,
+            ignoreChanneling = true }),
 
     -- Others
-    HolyNova        = spell(48078, { radius = 10, ignoreCasting = true, ignoreChanneling = true }),
+    HolyNova        = spell(48078, { ignoreCasting = true, ignoreChanneling = true }),
     ShackleUndead   = spell(10955, { effect = "magic", ignoreFacing = true, cc = true }),
-    PsychicScream   = spell(10890, { effect = "magic", ignoreFacing = true, cc = "fear", ignoreCasting = true, ignoreChanneling = true }),
+    PsychicScream   = spell(10890,
+        { effect = "magic", ignoreFacing = true, cc = "fear", ignoreCasting = true, ignoreChanneling = true }),
     MassDispel      = spell(32375, { ignoreFacing = true, radius = 15 }),
     DispelMagic     = spell(988, { effect = "magic", ignoreFacing = true }),
     Shoot           = spell(5019, { ignoreChanneling = true, ignoreCasting = true }),
+    AutoAttack      = spell(6603, { ignoreChanneling = true, ignoreCasting = true }),
     AbolishDisease  = spell(552, { effect = "magic", ignoreFacing = true, ignoreLoS = true }),
-    Silence         = spell(15487, { effect = "magic", cc = true, targeted = true, ignoreFacing = true, ignoreCasting = true, ignoreChanneling = true }),
+    Silence         = spell(15487,
+        { effect = "magic", cc = true, targeted = true, ignoreFacing = true, ignoreCasting = true,
+            ignoreChanneling = true }),
     PsychicHorror   = spell(64044, { effect = "magic", targeted = true, ignoreCasting = true, ignoreChanneling = true }),
     Dispersion      = spell(47585, { beneficial = true, ignoreControl = true, ignoreMoving = true }),
 
@@ -113,10 +119,10 @@ local swdCast = {
 
 ShadowWordDeath:Callback("polymorph", function(spell)
     awful.enemies.loop(function(unit)
-        if swdCast[unit.casting] and unit.castRemains <= awful.buffer + awful.latency + 0.3 then
+        if swdCast[unit.casting] and unit.castRemains <= awful.buffer + awful.latency + 0.5 then
             spellStopCasting()
             if spell:Cast(unit) then
-                awful.alert(spell.name, spell.id)
+                awful.alert("Shadow Word: Death (Polymorph)", spell.id)
                 return
             end
         end
@@ -125,10 +131,10 @@ end)
 
 ShadowWordDeath:Callback("seduction", function(spell)
     awful.enemyPets.loop(function(unit)
-        if swdCast[unit.casting] and unit.castRemains <= awful.buffer + awful.latency + 0.3 then
+        if swdCast[unit.casting] and unit.castRemains <= awful.buffer + awful.latency + 0.5 then
             spellStopCasting()
             if spell:Cast(unit) then
-                awful.alert(spell.name, spell.id)
+                awful.alert("Shadow Word: Death (Seduction)", spell.id)
                 return
             end
         end
@@ -136,12 +142,56 @@ ShadowWordDeath:Callback("seduction", function(spell)
 end)
 
 Shoot:Callback("tremor", function(spell)
+    if PsychicScream.cd > 0 then return end
+
     awful.totems.stomp(function(totem, uptime)
         if uptime < 0.3 then return end
 
         if totem.id == 5913 then
+            if totem.distance >= 30 or totem.distance <= 5 then return end
+            spellStopCasting()
             if not IsCurrentSpell(spell.id) then
-                return spell:Cast(totem)
+                if spell:Cast(totem) then
+                    awful.alert("Shoot (Tremor)", spell.id)
+                    return
+                end
+            end
+        end
+    end)
+end)
+
+AutoAttack:Callback("tremor", function(spell)
+    if PsychicScream.cd > 0 then return end
+
+    awful.totems.stomp(function(totem, uptime)
+        if uptime < 0.3 then return end
+
+        if totem.id == 5913 then
+            if totem.distance >= 5 then return end
+            spellStopCasting()
+            if not IsCurrentSpell(spell.id) then
+                if spell:Cast(totem) then
+                    awful.alert("Auto Attack (Tremor", spell.id)
+                    return
+                end
+            end
+        end
+    end)
+end)
+
+ShadowWordDeath:Callback("tremor", function(spell)
+    if PsychicScream.cd > 0 then return end
+
+    awful.totems.stomp(function(totem, uptime)
+        if uptime < 0.3 then return end
+
+        if totem.id == 5913 then
+            spellStopCasting()
+            if not IsCurrentSpell(spell.id) then
+                if spell:Cast(totem) then
+                    awful.alert("Shadow Word: Death (Tremor)", spell.id)
+                    return
+                end
             end
         end
     end)
@@ -198,7 +248,9 @@ local interruptCast = {
     ["Rejuvenation"] = true,
     ["Healing Touch"] = true,
     ["Nourish"] = true,
-    ["Cyclone"] = true
+    ["Cyclone"] = true,
+    ["Summon Succubus"] = true,
+    ["Summon Felhunter"] = true
 }
 
 local interruptChannel = {
@@ -212,10 +264,12 @@ Silence:Callback(function(spell)
 
     awful.enemies.loop(function(enemy)
         if not enemy.casting and not enemy.channeling then return end
+        if enemy.bcc then return end
+        if enemy.debuff("Psychic Horror") then return end
         if enemy.silenceDR <= 0.25 then return end
 
         if interruptCast[enemy.cast] then
-            if enemy.castRemains < awful.buffer + awful.latency + 0.03 then
+            if enemy.castRemains < awful.buffer + awful.latency + 0.2 then
                 spellStopCasting()
                 if spell:Cast(enemy) then
                     awful.alert(spell.name, spell.id)
@@ -248,10 +302,30 @@ end)
 
 PsychicHorror:Callback("cc", function(spell)
     if not rotation.settings.usePsychicHorror then return end
+    if target.hp > 80 then return end
 
-    if focus.exists and target.hp <= 60 and not focus.debuff("Silence") and not focus.bcc then
-        return spell:Cast(focus)
-    end
+    awful.enemies.loop(function(enemy)
+        if not enemy.casting and not enemy.channeling then return end
+        if enemy.bcc then return end
+
+        if interruptCast[enemy.cast] then
+            if enemy.castRemains < awful.buffer + awful.latency + 0.2 then
+                spellStopCasting()
+                if spell:Cast(enemy) then
+                    awful.alert(spell.name, spell.id)
+                    return
+                end
+            end
+        elseif interruptChannel[enemy.channel] then
+            if enemy.channelRemains < awful.buffer + awful.latency + 1.0 then
+                spellStopCasting()
+                if spell:Cast(enemy) then
+                    awful.alert(spell.name, spell.id)
+                    return
+                end
+            end
+        end
+    end)
 end)
 
 Fade:Callback(function(spell)
@@ -329,13 +403,14 @@ end)
 
 PrayerOfMending:Callback(function(spell)
     awful.fullGroup.loop(function(unit)
+        if target.hp < 20 then return end
         if awful.arena then
-            if not unit.buff("Prayer of Mending") and unit.hp <= 60 then
+            if not unit.buff("Prayer of Mending") and unit.hp <= 80 then
                 return spell:Cast(unit)
             end
         end
         if not awful.arena then
-            if not player.buff("Prayer of Mending") and player.hp <= 60 then
+            if not player.buff("Prayer of Mending") and player.hp <= 80 then
                 return spell:Cast(player)
             end
         end
@@ -344,6 +419,8 @@ end)
 
 BindingHeal:Callback(function(spell)
     if not awful.arena then return end
+    if target.hp < 20 then return end
+    if player.moving then return end
 
     awful.fullGroup.loop(function(unit)
         if unit.hp <= 60 and player.hp <= 60 then
@@ -353,6 +430,9 @@ BindingHeal:Callback(function(spell)
 end)
 
 FlashHeal:Callback(function(spell)
+    if target.hp < 20 then return end
+    if player.moving then return end
+
     awful.fullGroup.loop(function(unit)
         if awful.arena then
             if unit.hp <= 60 then
@@ -370,12 +450,12 @@ end)
 Renew:Callback(function(spell)
     awful.fullGroup.loop(function(unit)
         if awful.arena then
-            if not unit.buff("Renew") and unit.hp <= 60 then
+            if not unit.buff("Renew") and unit.hp <= 80 then
                 return spell:Cast(unit)
             end
         end
         if not awful.arena then
-            if not player.buff("Renew") and player.hp <= 60 then
+            if not player.buff("Renew") and player.hp <= 80 then
                 return spell:Cast(player)
             end
         end
@@ -387,7 +467,7 @@ Shadowfiend:Callback(function(spell)
     if target.bcc then return end
 
     if target.enemy then
-        if player.manaPct <= 20 or target.hp <= 60 then
+        if target.hp <= 60 or player.manaPct <= 20 then
             return spell:Cast(target)
         end
     end
@@ -415,11 +495,8 @@ HolyNova:Callback("snakes", function(spell)
 end)
 
 HolyNova:Callback("heal", function(spell)
-    if player.hp <= 20 and player.moving then
-        if spell:Cast() then
-            awful.alert(spell.name, spell.id)
-            return
-        end
+    if player.hp <= 40 and player.moving then
+        return spell:Cast()
     end
 end)
 
@@ -436,6 +513,7 @@ HolyNova:Callback("stealth", function(spell)
 end)
 
 ShackleUndead:Callback("gargoyle", function(spell)
+    if awful.fullGroup.lowest.hp <= 60 then return end
     awful.enemyPets.loop(function(unit)
         if unit.debuff("Shackle Undead") then return end
 
@@ -445,21 +523,11 @@ ShackleUndead:Callback("gargoyle", function(spell)
     end)
 end)
 
-ShackleUndead:Callback("lich", function(spell)
-    awful.enemies.loop(function(unit)
-        if unit.debuff("Shackle Undead") then return end
-
-        if unit.buff(49039) then
-            return spell:Cast(unit)
-        end
-    end)
-end)
-
 local fearImmunity = { 6346, 49039, 48707, 642, 31224 }
 
 PsychicScream:Callback("mutiple", function(spell)
     if awful.enemies.around(player, 6.5, function(enemy)
-            return enemy.los and enemy.ccRemains <= 0.2 and not enemy.isPet and not enemy.buffFrom(fearImmunity) and
+            return enemy.los and enemy.ccRemains <= 2 and not enemy.isPet and not enemy.buffFrom(fearImmunity) and
                 not tremor
         end) >= 2 then
         if spell:Cast() then
@@ -510,17 +578,6 @@ MassDispel:Callback("immune", function(spell)
     end)
 end)
 
-MassDispel:Callback("combat", function(spell)
-    awful.enemies.loop(function(unit)
-        if unit.debuff("Sap") and not player.combat then
-            if spell:SmartAoE(unit) then
-                awful.alert(spell.name .. " (Getting combat)", spell.id)
-                return
-            end
-        end
-    end)
-end)
-
 local dispelDisease = {
     ["Disease"] = true
 }
@@ -548,7 +605,7 @@ local dispelDefensive = {
     ["Seduction"] = true,
     ["Frost Nova"] = true,
     ["Howl of Terror"] = true,
-    ["Earthbind"] = true,
+    --["Earthbind"] = true,
     ["Cone of Cold"] = true,
     ["Frost Bite"] = true,
     ["Deep Freeze"] = true,
@@ -580,7 +637,6 @@ local dispelDefensive = {
     ["Flame Shock"] = true,
     ["Faerie Fire (Feral)"] = true,
     ["Moonfire"] = true,
-    ["Hunter's Mark"] = true,
     ["Frostfire Bolt"] = true,
     ["Corruption"] = true,
     ["Insect Swarm"] = true,
@@ -588,17 +644,22 @@ local dispelDefensive = {
 }
 
 local dispelBlacklist = {
-    ["Unstable Affliction"] = true
+    ["Unstable Affliction"] = true,
+    ["Vampiric Touch"] = true
 }
 
 DispelMagic:Callback("defensive", function(spell)
     awful.fullGroup.loop(function(unit)
+        if not unit.los then return end
+        if unit.distance > 40 then return end
+        if awful.fullGroup.lowest.hp <= 20 then return end
+
         for i, debuff in ipairs(unit.debuffs) do
             local name = unpack(debuff)
-
             if dispelBlacklist[name] then return end
+
             if dispelDefensive[name] then
-                return spell:Cast(unit) and awful.alert(name, spell.id)
+                return spell:Cast(unit) and awful.alert(name .. " (Defensive)", spell.id)
             end
         end
     end)
@@ -610,13 +671,10 @@ local dispelOffensive = {
     ["Regrowth"] = true,
     ["Lifebloom"] = true,
     ["Wild Growth"] = true,
-    ["Predator's Swiftness"] = true,
-    ["Nature's Swiftness"] = true,
     ["Innervate"] = true,
     ["Icy Veins"] = true,
     ["Ice Barrier"] = true,
     ["Mana Shield"] = true,
-    ["Combustion"] = true,
     ["Hand of Sacrifice"] = true,
     ["Hand of Freedom"] = true,
     ["Avenging Wrath"] = true,
@@ -633,30 +691,32 @@ local dispelOffensive = {
     ["Riptide"] = true,
     ["Power Infusion"] = true,
     ["Focus Magic"] = true,
-    ["Grace"] = true,
-    ["Inspiration"] = true,
-    ["Divine Aegis"] = true,
-    ["Prayer of Shadow Protection"] = true,
-    ["Shadow Protection"] = true,
+    --["Grace"] = true,
+    --["Inspiration"] = true,
+    --["Divine Aegis"] = true,
+    --["Prayer of Shadow Protection"] = true,
+    --["Shadow Protection"] = true,
     ["Prayer of Mending"] = true,
     ["Backdraft"] = true,
     ["Arcane Power"] = true,
-    ["Presence of Mind"] = true,
     ["Divine Sacrifice"] = true,
     ["Divine Favor"] = true,
-    ["Tidal Force"] = true,
-    ["Natural Perfection"] = true,
-    ["The Art of War"] = true
 }
 
 DispelMagic:Callback("offensive", function(spell)
     if not target or not target.exists then return end
+    if awful.fullGroup.lowest.hp <= 40 then return end
+    if target.distance > 30 then return end
+    if not target.los then return end
+    if not target.debuff("Vampiric Touch", player) then return end
+    if not target.debuff("Devouring Plague", player) then return end
+    if not target.debuff("Shadow Word: Pain", player) then return end
     if not target.enemy then return end
 
     for i, buff in ipairs(target.buffs) do
         local name = unpack(buff)
         if dispelOffensive[name] and player.manaPct >= 20 then
-            return spell:Cast(target) and awful.alert(name, spell.id)
+            return spell:Cast(target) and awful.alert(name .. " (Offensive)", spell.id)
         end
     end
 end)
@@ -672,6 +732,8 @@ DispelMagic:Callback("healer", function(spell)
     if not awful.arena then return end
 
     awful.enemies.loop(function(unit)
+        if not unit.los then return end
+
         for i, buff in ipairs(unit.buffs) do
             local name = unpack(buff)
             if dispelRegeneration[name] then
