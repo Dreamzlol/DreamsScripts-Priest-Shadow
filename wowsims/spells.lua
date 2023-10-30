@@ -173,7 +173,7 @@ wowSims_inventorySlot10:Update(function(item)
     if not target or not target.exists then return end
     if not item.usable then return end
     if player.moving then return end
-    if player.casting or player.channel then return end
+    if player.channel then return end
 
     if isBoss(target) then
         if item:Use() then
