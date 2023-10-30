@@ -437,7 +437,6 @@ end)
 wowSims_innerFocus:Callback(function(spell)
     if not rotation.settings.use_cds then return end
     if player.moving then return end
-    if wowSims_mindBlast.cd < 2 then return end
     if target.debuffRemains("Vampiric Touch", player) < 2
         and target.debuffRemains("Devouring Plague", player) < 2
         and target.debuffRemains("Shadow Word: Pain", player) < 2 then
