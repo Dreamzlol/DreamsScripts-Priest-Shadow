@@ -26,6 +26,7 @@ function rotation.pvp()
     shadow.DevouringPlague("execute")
     shadow.Shadowfiend()
     shadow.FearWard()
+    shadow.InnerFire()
     shadow.Fade()
 
     -- CC
@@ -46,13 +47,12 @@ function rotation.pvp()
     -- Healing
     shadow.PowerWordShield()
     shadow.PrayerOfMending()
-    shadow.Renew()
+    shadow.HolyNova("heal")
     shadow.BindingHeal()
     shadow.FlashHeal()
-    shadow.HolyNova("heal")
+    shadow.Renew()
 
     -- Damage
-    shadow.InnerFire()
     shadow.InventorySlot10()
     shadow.VampiricTouch()
     shadow.DevouringPlague()

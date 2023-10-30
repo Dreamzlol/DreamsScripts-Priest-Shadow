@@ -23,7 +23,7 @@ awful.Populate({
     wowSims_saroniteBomb       = item(41119),
     wowSims_globalSapperCharge = item(42641),
     wowSims_potionOfSpeed      = item(40211),
-    wowSims_healthstone        = item({ 6948, 36894, 36893, 36891, 36890, 36889 }),
+    wowSims_healthstone        = item({ 36892, 36894, 36893, 36891, 36890, 36889 }),
     -- Buffs
     wowSims_shadowform         = spell(15473, { beneficial = true }),
     wowSims_innerFire          = spell(48168, { beneficial = true }),

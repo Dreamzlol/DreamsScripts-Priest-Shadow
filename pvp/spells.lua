@@ -552,7 +552,7 @@ PsychicScream:Callback("focus", function(spell)
 end)
 
 PsychicScream:Callback("lowhp", function(spell)
-    awful.enemies.within(40).filter(unitFilter).loop(function(unit)
+    awful.enemies.loop(function(unit)
         if unit.distanceLiteral <= 9 and player.hp <= 20 then
             if spell:Cast() then
                 awful.alert(spell.name, spell.id)
