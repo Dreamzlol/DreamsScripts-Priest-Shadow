@@ -189,11 +189,11 @@ shadowform:Callback(function(spell)
 end)
 
 innerFire:Callback(function(spell)
-    if not player.buff(spell.id) then
-        if spell:Cast() then
-            awful.alert(spell.name, spell.id)
-            return
-        end
+    if player.buff("Inner Fire") then return end
+
+    if spell:Cast() then
+        awful.alert(spell.name, spell.id)
+        return
     end
 end)
 
